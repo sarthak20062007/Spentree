@@ -92,6 +92,7 @@ const NAV_ITEMS = [
 
 export default function Layout() {
   const { user, logout } = useApp();
+  const { theme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
@@ -119,19 +120,19 @@ export default function Layout() {
           width: '260px',
           minWidth: '260px',
           marginRight: '10px',
-          background: 'var(--bg-sidebar-solid)',
-          color: 'var(--color-text-secondary)',
-          boxShadow: 'var(--sidebar-shadow)',
+          background: 'var(--bg-sidebar)',
+          color: 'var(--color-text)',
+          boxShadow: theme === 'dark' ? 'none' : 'var(--sidebar-shadow)',
         }}
       >
         {/* ─── Logo Area ─── */}
-        <div className="px-6 py-8 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20">
+        <div className="px-6 py-8 flex items-center gap-3 border-b border-transparent dark:border-[#30363d]">
+          <div className="w-10 h-10 rounded-xl bg-white/10 dark:bg-[#58a6ff]/10 flex items-center justify-center backdrop-blur-sm border border-white/20 dark:border-[#58a6ff]/30 text-white dark:text-[#58a6ff]">
             {Icons.LogoTree}
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white leading-none">Spentree</h1>
-            <p className="text-[11px] uppercase tracking-[0.15em] text-white/60 mt-1">Finance</p>
+            <h1 className="text-2xl font-bold tracking-tight text-white dark:text-[#e6edf3] leading-none">Spentree</h1>
+            <p className="text-[11px] uppercase tracking-[0.15em] text-white/60 dark:text-[#8b949e] mt-1">Finance</p>
           </div>
           {/* Mobile Close Button */}
           <button 
@@ -142,6 +143,8 @@ export default function Layout() {
           </button>
         </div>
 
+        <div className="h-px bg-[#30363d] mx-6 hidden dark:block" />
+
         {/* ─── Main Navigation ─── */}
         <nav className="flex-1 px-4 py-3 space-y-1.5 overflow-y-auto">
           {NAV_ITEMS.map(item => (
@@ -150,26 +153,33 @@ export default function Layout() {
               to={item.to}
               onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
-                `group flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-nav font-medium transition-all duration-200 ${
+                `group flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-nav font-medium transition-all duration-200 border-l-4 border-transparent ${
                   isActive
-                    ? 'bg-white dark:bg-[#1f6feb] text-[#1e3a5f] dark:text-white shadow-[0_4px_12px_rgba(31,111,235,0.3)]'
-                    : 'text-white/80 dark:text-[#8b949e] hover:bg-white/10 hover:text-white dark:hover:text-[#e6edf3]'
+                    ? 'bg-white dark:bg-[#58a6ff]/10 text-[#1e3a5f] dark:text-[#58a6ff] shadow-[0_4px_12px_rgba(31,111,235,0.3)] dark:shadow-[0_0_15px_rgba(88,166,255,0.15)] dark:border-[#58a6ff]'
+                    : 'text-white/80 dark:text-[#8b949e] hover:bg-white/10 dark:hover:bg-[#21262d] hover:text-white dark:hover:text-[#e6edf3]'
                 }`
               }
             >
-              {item.icon}
-              <span className="tracking-wide">{item.label}</span>
+              {({ isActive }) => (
+                <>
+                  <div className={`transition-colors duration-200 ${isActive ? 'text-[#1e3a5f] dark:text-[#58a6ff]' : 'text-white/70 dark:text-[#58a6ff]'}`}>
+                    {item.icon}
+                  </div>
+                  <span className="tracking-wide">{item.label}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
 
         {/* ─── Bottom Section: Profile & Logout ─── */}
+        <div className="h-px bg-[#30363d] mx-6 hidden dark:block" />
         <div className="p-4 mt-auto flex flex-col gap-[10px]">
           {/* User Profile Mini */}
           <NavLink
             to="/profile"
             onClick={() => setSidebarOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 dark:border-[#30363d] hover:bg-white/10 transition-colors"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 dark:bg-[#161b22] border border-white/10 dark:border-[#30363d] hover:bg-white/10 dark:hover:bg-[#21262d] transition-colors"
           >
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 dark:from-[#58a6ff] dark:to-[#1f6feb] flex items-center justify-center text-white font-bold shadow-inner shrink-0">
               {user.username.charAt(0).toUpperCase()}
@@ -183,7 +193,7 @@ export default function Layout() {
           {/* Logout Button */}
           <button
             onClick={logout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-body font-medium text-white/70 hover:text-white hover:bg-red-500/20 hover:border-red-500/30 border border-transparent transition-all duration-200 shrink-0"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-body font-medium text-white/70 dark:text-[#8b949e] hover:text-white dark:hover:text-[#e6edf3] hover:bg-red-500/20 hover:border-red-500/30 border border-transparent transition-all duration-200 shrink-0"
           >
             {Icons.Logout}
             <span>Sign Out</span>
@@ -196,7 +206,7 @@ export default function Layout() {
         
         {/* ═══════════════ TOP NAVBAR / HEADER ═══════════════ */}
         <header 
-          className="sticky top-0 z-30 w-full flex items-center justify-between px-6 lg:px-10 shrink-0 bg-white dark:bg-[var(--bg-header)] backdrop-blur-md border-b border-slate-200 dark:border-[#30363d] shadow-sm"
+          className="sticky top-0 z-30 w-full flex items-center justify-between px-6 lg:px-10 shrink-0 bg-white dark:bg-[#161b22] backdrop-blur-md border-b border-slate-200 dark:border-[#30363d] shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
           style={{ height: '70px', transition: 'var(--transition-standard)' }}
         >
           {/* Left Side: Mobile Menu & Breadcrumb */}
@@ -214,7 +224,7 @@ export default function Layout() {
             <div className="flex items-center gap-2 font-nav">
               <span className="hidden sm:inline text-slate-400 font-medium">Pages</span>
               <span className="hidden sm:inline text-slate-400">/</span>
-              <h2 className="font-page-title text-lg text-slate-800 dark:text-white capitalize">{getPageTitle(location.pathname)}</h2>
+              <h2 className="font-page-title text-lg text-slate-800 dark:text-[#e6edf3] capitalize">{getPageTitle(location.pathname)}</h2>
             </div>
           </div>
 
@@ -222,17 +232,17 @@ export default function Layout() {
           <div className="flex items-center gap-3 lg:gap-5">
             <ThemeToggle />
             
-            <button className="relative p-2 text-slate-400 hover:text-slate-600 dark:hover:text-[#e6edf3] transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-[#21262d] hidden sm:block">
+            <button className="relative p-2 text-slate-400 hover:text-slate-600 dark:text-[#58a6ff] dark:hover:text-[#58a6ff]/80 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-[#21262d] hidden sm:block">
               {Icons.Bell}
               {/* Notification Dot indicator */}
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 border-2 border-white dark:border-[#0d1117]"></span>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 border-2 border-white dark:border-[#161b22]"></span>
             </button>
             
             <div className="hidden sm:block w-px h-8 bg-slate-200 dark:bg-[#30363d] mx-1"></div>
             
             <div className="flex items-center gap-3">
               <span className="hidden md:block font-body font-medium text-slate-700 dark:text-[#e6edf3]">{user.username}</span>
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-sm shrink-0 border-2 border-white dark:border-[#30363d]">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 dark:bg-[#1f6feb] dark:from-transparent dark:to-transparent flex items-center justify-center text-white font-bold shadow-sm shrink-0 border-2 border-white dark:border-[#30363d]">
                 {user.username.charAt(0).toUpperCase()}
               </div>
             </div>

@@ -159,10 +159,10 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
         <div>
-          <h1 className="font-page-title" style={{ color: 'var(--color-text-heading)' }}>
-            Welcome back, <span style={{ color: 'var(--color-primary)' }}>{user.username}</span> {level.emoji}
+          <h1 className="font-page-title text-slate-900 dark:text-[#e6edf3]">
+            Welcome back, <span className="text-blue-600 dark:text-[#58a6ff]">{user.username}</span> {level.emoji}
           </h1>
-          <p className="font-body mt-2" style={{ color: 'var(--color-text-muted)' }}>
+          <p className="font-body mt-2 text-slate-600 dark:text-[#8b949e]">
             {level.name} • {user.points} points • {progress}% to next level
           </p>
         </div>
@@ -182,7 +182,7 @@ export default function DashboardPage() {
             <div key={m.id} className="flex items-center gap-3.5 rounded-xl px-4 py-3 border border-transparent dark:border-[#30363d]/30 transition-all duration-200 hover:border-[#58a6ff]/30 shadow-sm" style={{ background: 'var(--bg-grad-hover)' }}>
               <span className={`text-2xl ${m.completed ? '' : 'grayscale'}`}>{m.completed ? '✅' : '⏳'}</span>
               <div className="flex-1 min-w-0">
-                <p className="font-body font-medium truncate" style={{ color: 'var(--color-text-secondary)' }}>{m.title}</p>
+                <p className="font-body font-medium truncate text-slate-700 dark:text-[#e6edf3]">{m.title}</p>
                 <div className="progress-bar-bg !h-2 mt-1.5">
                   <div className="progress-bar-fill" style={{ width: `${(m.progress / m.target) * 100}%` }} />
                 </div>
@@ -207,7 +207,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div>
-              <p className="font-label text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider text-[12px]">
+              <p className="font-label text-slate-500 dark:text-[#8b949e] mb-1 uppercase tracking-wider text-[12px]">
                 {card.label}
               </p>
               <p className="font-card-value text-[32px] font-bold leading-tight" style={{ color: card.color }}>
@@ -222,7 +222,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Bar Chart */}
         <div className="lg:col-span-2 bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 shadow-sm dark:shadow-[var(--glow-blue)] border border-slate-200 dark:border-[#30363d] transition-all duration-300">
-          <h3 className="font-card-title mb-5 text-slate-800 dark:text-white">Monthly Overview</h3>
+          <h3 className="font-card-title mb-5 text-slate-800 dark:text-[#e6edf3]">Monthly Overview</h3>
           <div style={{ height: '320px' }}>
             {transactions.length > 0 ? (
               <Bar data={barChartData} options={chartOptions} />
@@ -236,7 +236,7 @@ export default function DashboardPage() {
 
         {/* Doughnut Chart */}
         <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 shadow-sm dark:shadow-[var(--shadow-premium)] border border-slate-200 dark:border-[#30363d] transition-all duration-300">
-          <h3 className="font-card-title mb-5 text-slate-800 dark:text-white">Category Breakdown</h3>
+          <h3 className="font-card-title mb-5 text-slate-800 dark:text-[#e6edf3]">Category Breakdown</h3>
           <div style={{ height: '320px' }}>
             {categoryData.labels.length > 0 ? (
               <Doughnut data={doughnutData} options={doughnutOptions} />
@@ -252,7 +252,7 @@ export default function DashboardPage() {
       {/* Recent Transactions */}
       <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl shadow-sm dark:shadow-[var(--shadow-premium)] border border-slate-200 dark:border-[#30363d] overflow-hidden">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="font-card-title text-slate-800 dark:text-white">Recent Transactions</h3>
+          <h3 className="font-card-title text-slate-800 dark:text-[#e6edf3]">Recent Transactions</h3>
           {transactions.length > 5 && (
             <Link to="/transactions" className="font-label transition-colors" style={{ color: 'var(--color-primary)' }}>
               View all →
@@ -278,7 +278,7 @@ export default function DashboardPage() {
                         <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] shadow-sm shrink-0 text-xl">
                           {CATEGORY_ICONS[tx.category] || '📦'}
                         </div>
-                        <span className="font-body font-bold text-slate-800 dark:text-white">{tx.title}</span>
+                        <span className="font-body font-bold text-slate-800 dark:text-[#e6edf3]">{tx.title}</span>
                       </div>
                     </td>
                     <td className="py-2 px-4 whitespace-nowrap font-body text-slate-600 dark:text-slate-300">
@@ -306,8 +306,8 @@ export default function DashboardPage() {
       {/* Tree avatar mini */}
       <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl text-center p-8 shadow-sm dark:shadow-[var(--shadow-premium)] border border-slate-200 dark:border-[#30363d]">
         <div className="text-7xl mb-4 animate-tree-grow">{level.treeEmoji}</div>
-        <p className="font-card-title" style={{ color: 'var(--color-text-heading)' }}>{level.name}</p>
-        <p className="font-label mt-2" style={{ color: 'var(--color-text-muted)' }}>
+        <p className="font-card-title text-slate-800 dark:text-[#e6edf3]">{level.name}</p>
+        <p className="font-label mt-2 text-slate-500 dark:text-[#8b949e]">
           {nextLevel ? `${nextLevel.minPoints - user.points} pts to ${nextLevel.name}` : 'Max level reached! 🏆'}
         </p>
         <div className="progress-bar-bg !h-2 mt-4 max-w-sm mx-auto">
