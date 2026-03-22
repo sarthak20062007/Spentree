@@ -84,7 +84,7 @@ export default function TransactionsPage() {
 
       {/* Transaction list */}
       {filtered.length > 0 ? (
-        <div className="bg-white dark:bg-[#1c2128] rounded-xl shadow-sm border border-slate-200 dark:border-[#30363d] animate-slide-in">
+        <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl shadow-sm dark:shadow-[var(--shadow-premium)] border border-slate-200 dark:border-[#30363d] animate-slide-in">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -98,13 +98,13 @@ export default function TransactionsPage() {
               </thead>
               <tbody>
                 {paginatedTransactions.map(tx => (
-                  <tr key={tx.id} className="border-b border-slate-100 dark:border-[#30363d] last:border-0 hover:bg-blue-50/50 dark:hover:bg-[#161b22]/50 transition-colors h-[60px] even:bg-slate-50/50 dark:even:bg-[#161b22]/30">
-                    <td className="py-3 px-6 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] shadow-sm shrink-0 text-lg">
+                  <tr key={tx.id} className="border-b border-slate-100 dark:border-[#30363d] last:border-0 hover:bg-blue-50/50 dark:hover:bg-[#21262d] transition-all duration-200 h-[64px] even:bg-slate-50/50 dark:even:bg-[#161b22]/30">
+                    <td className="py-2 px-6 whitespace-nowrap">
+                      <div className="flex items-center gap-4">
+                        <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] shadow-sm shrink-0 text-xl">
                           {CATEGORY_ICONS[tx.category] || '📦'}
                         </div>
-                        <span className="font-body font-bold text-slate-800 dark:text-white">{tx.title}</span>
+                        <span className="font-body font-bold text-slate-800 dark:text-[#e6edf3]">{tx.title}</span>
                       </div>
                     </td>
                     <td className="py-3 px-6 whitespace-nowrap font-body text-slate-600 dark:text-slate-300">
@@ -142,22 +142,22 @@ export default function TransactionsPage() {
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 dark:border-[#30363d] bg-slate-50 dark:bg-[#161b22]/20 rounded-b-xl">
-              <span className="font-label text-slate-500 dark:text-slate-400">
+            <div className="flex items-center justify-between px-6 py-5 border-t border-slate-200 dark:border-[#30363d] bg-slate-50/50 dark:bg-[#161b22]/30 rounded-b-xl">
+              <span className="font-label text-slate-500 dark:text-[#8b949e]">
                 Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filtered.length)} of {filtered.length} entries
               </span>
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <button 
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 rounded-lg font-label border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-slate-600 dark:text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-[#21262d] transition-colors shadow-sm"
+                  className="px-5 py-2.5 rounded-lg font-label border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-slate-600 dark:text-[#e6edf3] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-[#21262d] transition-all shadow-sm"
                 >
                   Previous
                 </button>
                 <button 
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 rounded-lg font-label border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-slate-600 dark:text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-[#21262d] transition-colors shadow-sm"
+                  className="px-5 py-2.5 rounded-lg font-label border border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-slate-600 dark:text-[#e6edf3] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-[#21262d] transition-all shadow-sm"
                 >
                   Next
                 </button>

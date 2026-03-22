@@ -54,7 +54,7 @@ export default function AddTransactionPage() {
         <p className="font-body mt-2" style={{ color: 'var(--color-text-muted)' }}>Log your income or expense and earn +5 points!</p>
       </div>
 
-      <div className="card-static !p-8 md:!p-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-xl">
+      <div className="card-static !p-8 md:!p-10 animate-slide-in dark:shadow-[var(--shadow-premium)]">
         {/* Success Banner */}
         {submitted && (
           <div className="mb-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 flex items-center justify-between animate-slide-in">
@@ -167,7 +167,7 @@ export default function AddTransactionPage() {
         </form>
 
         {/* Points reward hint */}
-        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2 font-label text-slate-500 dark:text-slate-400">
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#30363d] flex items-center justify-center gap-2 font-label text-slate-500 dark:text-[#8b949e]">
           <span className="text-amber-500 text-base">🪙</span>
           <span>Earn <strong className="text-amber-500 dark:text-amber-400 font-bold">+5 points</strong> for every logged transaction</span>
         </div>

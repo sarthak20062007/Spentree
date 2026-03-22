@@ -52,7 +52,7 @@ export default function GamificationPage() {
 /* ========== Avatar Section ========== */
 function AvatarSection({ level }) {
   return (
-    <div className="bg-white dark:bg-[#1c2128] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm text-center">
+    <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm dark:shadow-[var(--shadow-premium)] transition-all duration-300 text-center">
       <div className="relative inline-block">
         <div className="text-[6rem] leading-none mb-4 animate-tree-grow">
           {level.treeEmoji}
@@ -67,7 +67,7 @@ function AvatarSection({ level }) {
 /* ========== Points Section ========== */
 function PointsSection({ level, nextLevel, progress, points }) {
   return (
-    <div className="bg-white dark:bg-[#1c2128] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm">
+    <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm dark:shadow-[var(--shadow-premium)] transition-all duration-300">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
         <div className="flex items-center gap-6">
           <div className="w-20 h-20 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-4xl border border-blue-100 dark:border-blue-800 shadow-sm">
@@ -113,7 +113,7 @@ function MissionsSection({ missions, completeMission }) {
   };
 
   return (
-    <div className="bg-white dark:bg-[#1c2128] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm relative overflow-hidden">
+    <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm dark:shadow-[var(--shadow-premium)] transition-all duration-300 relative overflow-hidden">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-xl border border-indigo-100 dark:border-indigo-800">
@@ -132,10 +132,10 @@ function MissionsSection({ missions, completeMission }) {
           return (
             <div
               key={m.id}
-              className={`group flex items-center justify-between p-4 rounded-xl border transition-all duration-300 ${
+              className={`group flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${
                 m.completed 
-                  ? 'bg-slate-50/50 dark:bg-[#161b22]/30 border-slate-200 dark:border-[#30363d]' 
-                  : 'bg-white dark:bg-[#1c2128] border-slate-100 dark:border-[#30363d] hover:border-slate-200 dark:hover:border-[#30363d]'
+                  ? 'bg-slate-50/50 dark:bg-[#161b22]/30 border-slate-200 dark:border-[#3fb950]/30 dark:shadow-[var(--glow-green)]' 
+                  : 'bg-white dark:bg-[var(--bg-grad-card)] border-slate-100 dark:border-[#30363d] hover:border-slate-200 dark:hover:border-[#58a6ff]/30 hover:dark:shadow-[var(--glow-blue)]'
               }`}
             >
               <div className="flex items-center gap-4 flex-1">
@@ -189,7 +189,7 @@ function MissionsSection({ missions, completeMission }) {
 /* ========== Badges ========== */
 function BadgesSection({ badges, earnedBadges }) {
   return (
-    <div className="bg-white dark:bg-[#1c2128] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm">
+    <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm dark:shadow-[var(--shadow-premium)] transition-all duration-300">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-xl border border-amber-100 dark:border-amber-800">
@@ -206,10 +206,10 @@ function BadgesSection({ badges, earnedBadges }) {
           return (
             <div
               key={badge.id}
-              className={`group flex flex-col items-center p-4 rounded-xl border transition-all duration-500 ${
+              className={`group flex flex-col items-center p-4 rounded-xl border transition-all duration-200 ${
                 earned 
-                  ? 'bg-slate-50 dark:bg-[#161b22]/50 border-slate-200 dark:border-[#30363d] hover:shadow-md' 
-                  : 'bg-white dark:bg-[#1c2128] border-slate-100 dark:border-[#30363d] opacity-60'
+                  ? 'bg-slate-50 dark:bg-[#161b22]/50 border-slate-200 dark:border-[#58a6ff]/20 hover:border-[#58a6ff]/40 shadow-sm hover:shadow-[var(--glow-blue)]' 
+                  : 'bg-white dark:bg-[#0d1117] border-slate-100 dark:border-[#30363d] opacity-60'
               }`}
             >
               <div className={`text-4xl mb-3 transition-transform duration-500 group-hover:scale-110 ${earned ? 'animate-badge-pop' : 'grayscale blur-[2px] opacity-40'}`}>
@@ -270,7 +270,7 @@ function SpinWheelSection({ canSpin, onSpin }) {
   const segmentAngle = 360 / SPIN_PRIZES.length;
 
   return (
-    <div className="bg-white dark:bg-[#1c2128] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm text-center">
+    <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm dark:shadow-[var(--shadow-premium)] transition-all duration-300 text-center">
       <div className="flex items-center justify-center gap-3 mb-10">
         <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-xl border border-blue-100 dark:border-blue-800">
           🎰
@@ -343,7 +343,7 @@ function LeaderboardSection({ user }) {
   const leaderboard = useMemo(() => getLeaderboard(user), [user]);
 
   return (
-    <div className="bg-white dark:bg-[#1c2128] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm">
+    <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 border border-slate-200 dark:border-[#30363d] shadow-sm dark:shadow-[var(--shadow-premium)] transition-all duration-300">
       <div className="flex items-center gap-3 mb-8">
         <div className="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-xl border border-green-100 dark:border-green-800">
           🏆
@@ -353,7 +353,7 @@ function LeaderboardSection({ user }) {
       <div className="overflow-hidden border border-slate-100 dark:border-[#30363d] rounded-xl">
         <table className="w-full font-body border-collapse">
           <thead>
-            <tr className="bg-slate-50 dark:bg-slate-800/50 border-bottom border-slate-100 dark:border-slate-800">
+            <tr className="bg-slate-50/50 dark:bg-[#161b22]/50 border-bottom border-slate-100 dark:border-[#30363d]">
               <th className="text-left py-4 px-6 font-bold text-slate-500 text-xs uppercase tracking-wider">Rank</th>
               <th className="text-left py-4 px-6 font-bold text-slate-500 text-xs uppercase tracking-wider">Player</th>
               <th className="text-left py-4 px-6 font-bold text-slate-500 text-xs uppercase tracking-wider">Expertise</th>
@@ -364,7 +364,7 @@ function LeaderboardSection({ user }) {
             {leaderboard.map((entry, i) => (
               <tr
                 key={entry.username}
-                className={`transition-colors ${entry.isCurrentUser ? 'bg-blue-50/50 dark:bg-blue-900/10' : 'hover:bg-slate-50/50 dark:hover:bg-[#161b22]/30'}`}
+                className={`transition-all duration-200 ${entry.isCurrentUser ? 'bg-blue-50/50 dark:bg-blue-900/10' : 'hover:bg-slate-50/50 dark:hover:bg-[#21262d]'}`}
               >
                 <td className="py-4 px-6">
                   <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${

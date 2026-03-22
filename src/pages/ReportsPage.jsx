@@ -158,7 +158,7 @@ export default function ReportsPage() {
           <h1 className="font-page-title" style={{ color: 'var(--color-text-heading)' }}>Reports</h1>
           <p className="font-body mt-2" style={{ color: 'var(--color-text-muted)' }}>Visualize your financial data</p>
         </div>
-        <div className="bg-white dark:bg-[#1c2128] rounded-xl p-8 shadow-sm border border-slate-200 dark:border-[#30363d] text-center py-24">
+        <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 shadow-sm dark:shadow-[var(--shadow-premium)] border border-slate-200 dark:border-[#30363d] text-center py-24">
           <span className="text-7xl block mb-6">📊</span>
           <h3 className="font-card-title mb-3" style={{ color: 'var(--color-text-secondary)' }}>No data yet</h3>
           <p className="font-body" style={{ color: 'var(--color-text-faint)' }}>Add some transactions to see beautiful reports here.</p>
@@ -180,25 +180,25 @@ export default function ReportsPage() {
         </div>
         
         <div className="flex items-center gap-3">
-          <div className="relative group/select">
+          <div className="relative group/select transition-all duration-200">
             <select 
               value={selectedMonth} 
               onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-              className="appearance-none bg-white dark:bg-[#1c2128] border border-slate-200 dark:border-[#30363d] rounded-lg px-5 py-3 pr-12 font-label text-sm font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all cursor-pointer shadow-sm hover:border-slate-300 dark:hover:border-slate-700 min-w-[140px]"
+              className="appearance-none bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] rounded-lg px-6 py-3.5 pr-12 font-label text-sm font-bold focus:border-[#58a6ff] focus:ring-2 focus:ring-[#58a6ff]/20 outline-none transition-all cursor-pointer shadow-sm hover:border-slate-300 dark:hover:border-[#58a6ff]/40 min-w-[150px]"
             >
               {months.map((m, i) => <option key={m} value={i}>{m}</option>)}
             </select>
-            <span className="absolute right-4 top-[52%] -translate-y-1/2 pointer-events-none text-slate-400 text-[10px] group-hover/select:text-blue-500 transition-colors">▼</span>
+            <span className="absolute right-4 top-[52%] -translate-y-1/2 pointer-events-none text-slate-400 text-[10px] group-hover/select:text-[#58a6ff] transition-colors">▼</span>
           </div>
-          <div className="relative group/select">
+          <div className="relative group/select transition-all duration-200">
             <select 
               value={selectedYear} 
               onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-              className="appearance-none bg-white dark:bg-[#1c2128] border border-slate-200 dark:border-[#30363d] rounded-lg px-5 py-3 pr-12 font-label text-sm font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all cursor-pointer shadow-sm hover:border-slate-300 dark:hover:border-slate-700 min-w-[100px]"
+              className="appearance-none bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] rounded-lg px-6 py-3.5 pr-12 font-label text-sm font-bold focus:border-[#58a6ff] focus:ring-2 focus:ring-[#58a6ff]/20 outline-none transition-all cursor-pointer shadow-sm hover:border-slate-300 dark:hover:border-[#58a6ff]/40 min-w-[110px]"
             >
               {years.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
-            <span className="absolute right-4 top-[52%] -translate-y-1/2 pointer-events-none text-slate-400 text-[10px] group-hover/select:text-blue-500 transition-colors">▼</span>
+            <span className="absolute right-4 top-[52%] -translate-y-1/2 pointer-events-none text-slate-400 text-[10px] group-hover/select:text-[#58a6ff] transition-colors">▼</span>
           </div>
         </div>
       </div>
@@ -206,36 +206,36 @@ export default function ReportsPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div 
-          className="bg-white dark:bg-[#1c2128] rounded-xl p-6 shadow-sm border border-slate-200 dark:border-[#30363d] border-l-[6px]"
+          className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-6 shadow-sm dark:shadow-[var(--glow-blue)] border border-slate-200 dark:border-[#30363d] border-l-[6px] hover:translate-y-[-2px] transition-all duration-200"
           style={{ borderLeftColor: isLight ? '#2563eb' : '#58a6ff' }}
         >
-          <div className="flex items-center justify-between mb-2">
-            <p className="font-body font-bold text-slate-500 uppercase tracking-wider text-xs">Total Revenue</p>
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-body font-bold text-slate-500 dark:text-[#8b949e] uppercase tracking-wider text-xs">Total Revenue</p>
             <span className="text-xl">💰</span>
           </div>
-          <p className="font-card-value text-slate-900 dark:text-white">₹{totalIncome.toLocaleString()}</p>
+          <p className="font-card-value text-slate-900 dark:text-white" style={{ fontSize: '28px' }}>₹{totalIncome.toLocaleString()}</p>
         </div>
         
         <div 
-          className="bg-white dark:bg-[#1c2128] rounded-xl p-6 shadow-sm border border-slate-200 dark:border-[#30363d] border-l-[6px]"
+          className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-6 shadow-sm dark:shadow-[var(--glow-red)] border border-slate-200 dark:border-[#30363d] border-l-[6px] hover:translate-y-[-2px] transition-all duration-200"
           style={{ borderLeftColor: '#f85149' }}
         >
-          <div className="flex items-center justify-between mb-2">
-            <p className="font-body font-bold text-slate-500 uppercase tracking-wider text-xs">Total Expenditure</p>
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-body font-bold text-slate-500 dark:text-[#8b949e] uppercase tracking-wider text-xs">Total Expenditure</p>
             <span className="text-xl">💸</span>
           </div>
-          <p className="font-card-value text-slate-900 dark:text-white">₹{totalExpense.toLocaleString()}</p>
+          <p className="font-card-value text-slate-900 dark:text-white" style={{ fontSize: '28px' }}>₹{totalExpense.toLocaleString()}</p>
         </div>
-
+ 
         <div 
-          className="bg-white dark:bg-[#1c2128] rounded-xl p-6 shadow-sm border border-slate-200 dark:border-[#30363d] border-l-[6px]"
+          className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-6 shadow-sm dark:shadow-[var(--glow-green)] border border-slate-200 dark:border-[#30363d] border-l-[6px] hover:translate-y-[-2px] transition-all duration-200"
           style={{ borderLeftColor: isLight ? '#10b981' : '#3fb950' }}
         >
-          <div className="flex items-center justify-between mb-2">
-            <p className="font-body font-bold text-slate-500 uppercase tracking-wider text-xs">Net Operating Profit</p>
+          <div className="flex items-center justify-between mb-4">
+            <p className="font-body font-bold text-slate-500 dark:text-[#8b949e] uppercase tracking-wider text-xs">Net Operating Profit</p>
             <span className="text-xl">📈</span>
           </div>
-          <p className={`font-card-value ${totalSavings >= 0 ? 'text-slate-900 dark:text-white' : 'text-red-500'}`}>
+          <p className={`font-card-value ${totalSavings >= 0 ? 'text-slate-900 dark:text-white' : 'text-[#f85149]'}`} style={{ fontSize: '28px' }}>
             ₹{totalSavings.toLocaleString()}
           </p>
         </div>
@@ -244,7 +244,7 @@ export default function ReportsPage() {
       {/* Primary Charts Container */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Income vs Expense (Trend) */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl p-8 shadow-sm border border-slate-200 dark:border-slate-800">
+        <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 shadow-sm dark:shadow-[var(--shadow-premium)] border border-slate-200 dark:border-[#30363d] transition-all duration-300">
           <h3 className="font-card-title mb-8 text-slate-800 dark:text-white flex items-center gap-2">
             <span className="w-2 h-6 bg-blue-600 rounded-full" />
             Cash Flow Analysis
@@ -255,7 +255,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Savings Trend */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl p-8 shadow-sm border border-slate-200 dark:border-slate-800">
+        <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 shadow-sm dark:shadow-[var(--shadow-premium)] border border-slate-200 dark:border-[#30363d] transition-all duration-300">
           <h3 className="font-card-title mb-8 text-slate-800 dark:text-white flex items-center gap-2">
             <span className="w-2 h-6 bg-emerald-500 rounded-full" />
             Savings Growth Matrix

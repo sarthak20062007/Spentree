@@ -280,22 +280,24 @@ input, select, textarea, button { font-family: inherit; }
 
 .card {
   background: var(--bg-card);
+  background: var(--bg-grad-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 1.25rem;
-  transition: all 0.3s ease;
+  padding: 1.5rem;
+  transition: var(--transition-standard);
 }
 .card:hover {
-  border-color: var(--color-primary-glow-strong);
-  box-shadow: var(--shadow-glow);
+  border-color: var(--color-border-accent);
+  box-shadow: var(--shadow-premium), var(--glow-blue);
   transform: translateY(-2px);
 }
 .card-static {
   background: var(--bg-card);
+  background: var(--bg-grad-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 1.25rem;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  padding: 1.5rem;
+  transition: var(--transition-standard);
 }
 
 .btn-primary {
@@ -425,17 +427,17 @@ input, select, textarea, button { font-family: inherit; }
   background: var(--bg-input);
   border: 1px solid #e2e8f0;
   border-radius: var(--radius);
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1.25rem;
   color: var(--color-text);
   font-size: 16px;
   min-height: 48px;
   width: 100%;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  transition: var(--transition-standard);
   outline: none;
 }
 .input-field:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
 }
 [data-theme="dark"] .input-field {
   border-color: rgba(51, 65, 85, 0.5);
@@ -473,14 +475,14 @@ input, select, textarea, button { font-family: inherit; }
 
 /* Theme transition on all interactive elements */
 * {
-  transition-property: background-color, border-color, color, box-shadow;
-  transition-duration: 0s;
+  transition-property: background-color, border-color, color, box-shadow, transform;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 body,
 .card, .card-static, .card:hover,
-.input-field, .progress-bar-bg {
-  transition-duration: 0.3s;
-  transition-timing-function: ease;
+.input-field, .progress-bar-bg, .btn-primary, .btn-secondary {
+  transition: var(--transition-standard);
 }
 
 /* ========== Typography (High Contrast & Legibility) ========== */
