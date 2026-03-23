@@ -1,16 +1,36 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { useTheme } from '../context/ThemeContext';
+import { motion } from 'framer-motion';
+
 import { calculateLevel, getLevelProgress, getNextLevel, CATEGORY_COLORS, CATEGORY_ICONS } from '../utils/gamification';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
+function AnimatedNumber({ value, duration = 1500, prefix = '', suffix = '' }) {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    let start = 0;
+    const end = value;
+    if (start === end) return;
+    const startTime = performance.now();
+    const step = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(eased * end));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [value, duration]);
+  return <>{prefix}{display.toLocaleString()}{suffix}</>;
+}
+
 export default function DashboardPage() {
   const { user, transactions, dailyMissions } = useApp();
-  const { theme } = useTheme();
+
 
   const level = calculateLevel(user.points);
   const nextLevel = getNextLevel(user.points);
@@ -68,8 +88,8 @@ export default function DashboardPage() {
   const barChartData = {
     labels: monthlyData.map(m => m.label),
     datasets: [
-      { label: 'Income', data: monthlyData.map(m => m.earned), backgroundColor: 'rgba(59, 130, 246, 0.8)', borderRadius: 4 },
-      { label: 'Expenses', data: monthlyData.map(m => m.spent), backgroundColor: 'rgba(239, 68, 68, 0.8)', borderRadius: 4 },
+      { label: 'Income', data: monthlyData.map(m => m.earned), backgroundColor: '#4f8ef7', borderRadius: 4 },
+      { label: 'Expenses', data: monthlyData.map(m => m.spent), backgroundColor: '#f85149', borderRadius: 4 },
     ],
   };
 
@@ -83,9 +103,8 @@ export default function DashboardPage() {
     }],
   };
 
-  const isLight = theme === 'light';
-  const textColor = isLight ? '#475569' : '#8b949e';
-  const gridColor = isLight ? '#e2e8f0' : '#30363d';
+  const textColor = 'rgba(255,255,255,0.6)';
+  const gridColor = 'rgba(255,255,255,0.08)';
 
   const chartOptions = {
     responsive: true,
@@ -93,10 +112,10 @@ export default function DashboardPage() {
     plugins: {
       legend: { labels: { color: textColor, font: { family: 'Inter', size: 14 }, usePointStyle: true, boxWidth: 8 } },
       tooltip: {
-        backgroundColor: isLight ? '#ffffff' : '#1e293b',
-        titleColor: isLight ? '#1e293b' : '#f1f5f9',
-        bodyColor: isLight ? '#64748b' : '#94a3b8',
-        borderColor: isLight ? '#e2e8f0' : '#334155',
+        backgroundColor: 'rgba(30,30,30,0.8)',
+        titleColor: '#fff',
+        bodyColor: 'rgba(255,255,255,0.6)',
+        borderColor: 'rgba(255,255,255,0.1)',
         borderWidth: 1,
         cornerRadius: 8,
         padding: 12,
@@ -126,68 +145,79 @@ export default function DashboardPage() {
   // Professional Inline SVGs for Cards
   const CardIcons = {
     balance: (
-      <svg className="w-8 h-8 text-[#1e3a5f] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8 text-[#58a6ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
       </svg>
     ),
     income: (
-      <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8 text-[#3fb950]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
       </svg>
     ),
     expense: (
-      <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8 text-[#f85149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
       </svg>
     ),
     savings: (
-      <svg className="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8 text-[#d29922]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
       </svg>
     ),
   };
 
   const statCards = [
-    { label: 'Total Balance', value: stats.balance, icon: CardIcons.balance, color: stats.balance >= 0 ? '#22c55e' : '#ef4444', prefix: '₹' },
-    { label: 'Income', value: stats.income, icon: CardIcons.income, color: '#22c55e', prefix: '₹' },
-    { label: 'Expenses', value: stats.expenses, icon: CardIcons.expense, color: '#ef4444', prefix: '₹' },
-    { label: 'Savings Rate', value: stats.savings, icon: CardIcons.savings, color: '#f59e0b', suffix: '%' },
+    { label: 'Total Balance', value: stats.balance, icon: CardIcons.balance, color: stats.balance >= 0 ? '#3fb950' : '#f85149', prefix: '₹', borderColor: '#58a6ff' },
+    { label: 'Income', value: stats.income, icon: CardIcons.income, color: '#3fb950', prefix: '₹', borderColor: '#3fb950' },
+    { label: 'Expenses', value: stats.expenses, icon: CardIcons.expense, color: '#f85149', prefix: '₹', borderColor: '#f85149' },
+    { label: 'Savings Rate', value: stats.savings, icon: CardIcons.savings, color: '#d29922', suffix: '%', borderColor: '#d29922' },
   ];
 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5"
+      >
         <div>
-          <h1 className="font-page-title text-slate-900 dark:text-[#e6edf3]">
-            Welcome back, <span className="text-blue-600 dark:text-[#58a6ff]">{user.username}</span> {level.emoji}
+          <h1 className="text-2xl font-bold text-[#e6edf3]">
+            Welcome back, <span className="text-[#58a6ff]">{user.username}</span> {level.emoji}
           </h1>
-          <p className="font-body mt-2 text-slate-600 dark:text-[#8b949e]">
+          <p className="mt-2 text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
             {level.name} • {user.points} points • {progress}% to next level
           </p>
         </div>
-        <Link to="/add" className="btn-primary flex items-center gap-2 text-center justify-center !font-bold">
+        <Link to="/add" className="flex items-center gap-2 text-center justify-center font-bold text-white px-5 py-3 rounded-xl text-sm transition-all duration-300 hover:brightness-110" style={{ background: 'linear-gradient(135deg, #1e3a5f, #7c3aed)' }}>
           ➕ Add Transaction
         </Link>
-      </div>
+      </motion.div>
 
       {/* Daily Missions Bar */}
-      <div className="card-static !p-5">
+      <div style={{ background: 'rgba(30,30,30,0.6)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '16px 20px' }}>
         <div className="flex items-center gap-2.5 mb-4">
           <span className="text-xl">🎯</span>
-          <h3 className="font-card-title" style={{ color: 'var(--color-text-heading)' }}>Daily Missions</h3>
+          <h3 className="font-bold text-white">Daily Missions</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {dailyMissions.map(m => (
-            <div key={m.id} className="flex items-center gap-3.5 rounded-xl px-4 py-3 border border-transparent dark:border-[#30363d]/30 transition-all duration-200 hover:border-[#58a6ff]/30 shadow-sm" style={{ background: 'var(--bg-grad-hover)' }}>
+            <div key={m.id} className="flex items-center gap-3.5 rounded-lg px-4 py-3 transition-all duration-200 hover:bg-white/10" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
               <span className={`text-2xl ${m.completed ? '' : 'grayscale'}`}>{m.completed ? '✅' : '⏳'}</span>
               <div className="flex-1 min-w-0">
-                <p className="font-body font-medium truncate text-slate-700 dark:text-[#e6edf3]">{m.title}</p>
-                <div className="progress-bar-bg !h-2 mt-1.5">
-                  <div className="progress-bar-fill" style={{ width: `${(m.progress / m.target) * 100}%` }} />
+                <p className="font-medium truncate text-white text-sm">{m.title}</p>
+                <div className="h-2 mt-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{ background: '#f59e0b' }}
+                    initial={{ width: '0%' }}
+                    animate={{ width: `${(m.progress / m.target) * 100}%` }}
+                    transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+                  />
                 </div>
               </div>
-              <span className="font-label text-amber-400 font-bold tracking-wide">+{m.reward}</span>
+              <span className="text-xs font-bold text-[#d29922] tracking-wide">+{m.reward}</span>
             </div>
           ))}
         </div>
@@ -196,38 +226,41 @@ export default function DashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {statCards.map((card, index) => (
-          <div 
-            key={card.label} 
-            className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-6 shadow-sm dark:shadow-[var(--shadow-premium)] hover:translate-y-[-2px] transition-all duration-200 border border-slate-200 dark:border-[#30363d] border-l-[4px] animate-slide-in flex flex-col justify-between group hover:dark:shadow-[var(--glow-blue)]" 
-            style={{ '--stagger': `${index * 0.1}s`, borderLeftColor: isLight ? '#1e3a5f' : (card.label === 'Total Income' ? '#3fb950' : (card.label === 'Total Expenses' ? '#f85149' : '#58a6ff')) }}
+          <motion.div
+            key={card.label}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 * (index + 1) }}
+            className="rounded-xl p-6 hover:translate-y-[-2px] transition-all duration-200 flex flex-col justify-between group"
+            style={{ background: 'transparent', borderLeft: `4px solid ${card.borderColor}` }}
           >
             <div className="flex items-start justify-between mb-4">
-              <div className="bg-slate-50 dark:bg-[#0d1117] p-2.5 rounded-lg border border-slate-100 dark:border-[#30363d] group-hover:dark:border-[#58a6ff]/30 transition-colors">
+              <div className="p-2.5 rounded-lg" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 {card.icon}
               </div>
             </div>
             <div>
-              <p className="font-label text-slate-500 dark:text-[#8b949e] mb-1 uppercase tracking-wider text-[12px]">
+              <p className="mb-1 uppercase tracking-wider text-[12px] font-bold" style={{ color: 'rgba(255,255,255,0.5)' }}>
                 {card.label}
               </p>
-              <p className="font-card-value text-[32px] font-bold leading-tight" style={{ color: card.color }}>
-                {card.prefix}{card.value.toLocaleString()}{card.suffix}
+              <p className="text-[32px] font-bold leading-tight" style={{ color: card.color }}>
+                <AnimatedNumber value={card.value} prefix={card.prefix || ''} suffix={card.suffix || ''} />
               </p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
       {/* Charts + Recent Transactions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Bar Chart */}
-        <div className="lg:col-span-2 bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 shadow-sm dark:shadow-[var(--glow-blue)] border border-slate-200 dark:border-[#30363d] transition-all duration-300">
-          <h3 className="font-card-title mb-5 text-slate-800 dark:text-[#e6edf3]">Monthly Overview</h3>
+        <div className="lg:col-span-2 rounded-xl p-8" style={{ background: 'rgba(30,30,30,0.6)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <h3 className="font-bold mb-5 text-white">Monthly Overview</h3>
           <div style={{ height: '320px' }}>
             {transactions.length > 0 ? (
               <Bar data={barChartData} options={chartOptions} />
             ) : (
-              <div className="flex items-center justify-center h-full font-body" style={{ color: 'var(--color-text-faint)' }}>
+              <div className="flex items-center justify-center h-full" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 Add transactions to see your monthly overview
               </div>
             )}
@@ -235,13 +268,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Doughnut Chart */}
-        <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl p-8 shadow-sm dark:shadow-[var(--shadow-premium)] border border-slate-200 dark:border-[#30363d] transition-all duration-300">
-          <h3 className="font-card-title mb-5 text-slate-800 dark:text-[#e6edf3]">Category Breakdown</h3>
+        <div className="rounded-xl p-8" style={{ background: 'rgba(30,30,30,0.6)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <h3 className="font-bold mb-5 text-white">Category Breakdown</h3>
           <div style={{ height: '320px' }}>
             {categoryData.labels.length > 0 ? (
               <Doughnut data={doughnutData} options={doughnutOptions} />
             ) : (
-              <div className="flex items-center justify-center h-full font-body" style={{ color: 'var(--color-text-faint)' }}>
+              <div className="flex items-center justify-center h-full" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 No expense data yet
               </div>
             )}
@@ -250,11 +283,11 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Transactions */}
-      <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl shadow-sm dark:shadow-[var(--shadow-premium)] border border-slate-200 dark:border-[#30363d] overflow-hidden">
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="font-card-title text-slate-800 dark:text-[#e6edf3]">Recent Transactions</h3>
+      <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(30,30,30,0.6)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="flex items-center justify-between px-6 py-4">
+          <h3 className="font-bold text-white">Recent Transactions</h3>
           {transactions.length > 5 && (
-            <Link to="/transactions" className="font-label transition-colors" style={{ color: 'var(--color-primary)' }}>
+            <Link to="/transactions" className="text-xs font-bold text-[#58a6ff] hover:text-[#58a6ff]/80 transition-colors">
               View all →
             </Link>
           )}
@@ -263,55 +296,62 @@ export default function DashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 dark:bg-[#161b22]/50 border-y border-slate-200 dark:border-[#30363d]">
-                  <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-[#1e3a5f] dark:text-blue-400">Transaction</th>
-                  <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-[#1e3a5f] dark:text-blue-400">Category</th>
-                  <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-[#1e3a5f] dark:text-blue-400">Date</th>
-                  <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-[#1e3a5f] dark:text-blue-400 text-right">Amount</th>
+                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                  <th className="py-3 px-6 text-xs font-bold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.4)' }}>Transaction</th>
+                  <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.4)' }}>Category</th>
+                  <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.4)' }}>Date</th>
+                  <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-right" style={{ color: 'rgba(255,255,255,0.4)' }}>Amount</th>
                 </tr>
               </thead>
               <tbody>
-                {recentTransactions.map(tx => (
-                  <tr key={tx.id} className="border-b border-slate-100 dark:border-[#30363d] last:border-0 hover:bg-blue-50/50 dark:hover:bg-[#21262d] transition-all duration-200 h-[64px] even:bg-slate-50/50 dark:even:bg-[#161b22]/30">
+                {recentTransactions.map((tx, i) => (
+                  <motion.tr
+                    key={tx.id}
+                    initial={{ opacity: 0, x: -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 * (i + 1) }}
+                    className="hover:bg-white/10 transition-all duration-200 h-[64px]"
+                    style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+                  >
                     <td className="py-2 px-6 whitespace-nowrap">
                       <div className="flex items-center gap-4">
-                        <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#30363d] shadow-sm shrink-0 text-xl">
+                        <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 text-xl" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
                           {CATEGORY_ICONS[tx.category] || '📦'}
                         </div>
-                        <span className="font-body font-bold text-slate-800 dark:text-[#e6edf3]">{tx.title}</span>
+                        <span className="font-bold text-white">{tx.title}</span>
                       </div>
                     </td>
-                    <td className="py-2 px-4 whitespace-nowrap font-body text-slate-600 dark:text-slate-300">
+                    <td className="py-2 px-4 whitespace-nowrap text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
                       {tx.category}
                     </td>
-                    <td className="py-2 px-4 whitespace-nowrap font-label text-slate-500 dark:text-slate-400">
+                    <td className="py-2 px-4 whitespace-nowrap text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
                       {tx.date}
                     </td>
-                    <td className={`py-2 px-4 whitespace-nowrap text-right font-body font-bold text-lg ${tx.type === 'income' ? 'text-green-600 dark:text-green-500' : 'text-red-500 dark:text-red-400'}`}>
+                    <td className={`py-2 px-4 whitespace-nowrap text-right font-bold text-lg ${tx.type === 'income' ? 'text-[#3fb950]' : 'text-[#f85149]'}`}>
                       {tx.type === 'income' ? '+' : '-'}₹{tx.amount.toLocaleString()}
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
           </div>
         ) : (
-          <div className="text-center py-12" style={{ color: 'var(--color-text-faint)' }}>
+          <div className="text-center py-12" style={{ color: 'rgba(255,255,255,0.4)' }}>
             <span className="text-5xl block mb-3">🌱</span>
-            <p className="font-body">No transactions yet. Start tracking!</p>
+            <p>No transactions yet. Start tracking!</p>
           </div>
         )}
       </div>
 
       {/* Tree avatar mini */}
-      <div className="bg-white dark:bg-[var(--bg-grad-card)] rounded-xl text-center p-8 shadow-sm dark:shadow-[var(--shadow-premium)] border border-slate-200 dark:border-[#30363d]">
+      <div className="rounded-xl text-center p-8" style={{ background: 'rgba(30,30,30,0.6)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="text-7xl mb-4 animate-tree-grow">{level.treeEmoji}</div>
-        <p className="font-card-title text-slate-800 dark:text-[#e6edf3]">{level.name}</p>
-        <p className="font-label mt-2 text-slate-500 dark:text-[#8b949e]">
+        <p className="font-bold text-white">{level.name}</p>
+        <p className="text-sm mt-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
           {nextLevel ? `${nextLevel.minPoints - user.points} pts to ${nextLevel.name}` : 'Max level reached! 🏆'}
         </p>
-        <div className="progress-bar-bg !h-2 mt-4 max-w-sm mx-auto">
-          <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
+        <div className="h-2 mt-4 max-w-sm mx-auto rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+          <div className="h-full rounded-full" style={{ width: `${progress}%`, background: 'linear-gradient(90deg, #58a6ff, #3fb950)' }} />
         </div>
       </div>
     </div>

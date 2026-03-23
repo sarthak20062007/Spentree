@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { useTheme } from '../context/ThemeContext';
-import ThemeToggle from '../components/ThemeToggle';
+import { motion } from 'framer-motion';
+import AuroraBackground from '../components/animations/AuroraBackground';
 
 export default function LoginPage() {
   const { login, register } = useApp();
-  const { theme } = useTheme();
   const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
 
@@ -74,7 +73,7 @@ export default function LoginPage() {
         setIsRegister(false);
         setLoginGmail(regGmail.trim().toLowerCase());
         setLoginPassword('');
-        setSuccess('✅ Account created successfully! Please login with your credentials.');
+        setSuccess('✅ Account created! Please login.');
       } else {
         setError(result.message);
       }
@@ -87,167 +86,277 @@ export default function LoginPage() {
     setSuccess('');
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
-      {/* Theme toggle */}
-      <div className="absolute top-6 right-6">
-        <ThemeToggle />
-      </div>
+  // Shared input style
+  const inputStyle = {
+    background: 'rgba(255, 255, 255, 0.08)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: '12px',
+    color: '#fff',
+    padding: '14px 16px',
+    fontSize: '15px',
+    width: '100%',
+    outline: 'none',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
+  };
 
-      <div className="w-full max-w-[440px] px-6 py-12">
-        {/* Branding */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-500/20 mb-6">
-            <span className="text-3xl text-white">🌳</span>
+  const inputFocusHandler = (e) => {
+    e.target.style.borderColor = 'rgba(255,255,255,0.6)';
+    e.target.style.boxShadow = '0 0 12px rgba(255,255,255,0.15)';
+  };
+  const inputBlurHandler = (e) => {
+    e.target.style.borderColor = 'rgba(255,255,255,0.2)';
+    e.target.style.boxShadow = 'none';
+  };
+
+  const labelStyle = {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: '13px',
+    fontWeight: 600,
+    marginBottom: '6px',
+    display: 'block',
+  };
+
+  return (
+    <AuroraBackground>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-[420px] px-4"
+      >
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div
+            className="inline-flex items-center justify-center mx-auto mb-4"
+            style={{
+              width: '50px',
+              height: '50px',
+              background: 'rgba(255,255,255,0.15)',
+              borderRadius: '16px',
+              padding: '12px',
+            }}
+          >
+            <span className="text-2xl">🌳</span>
           </div>
-          <h1 className="font-page-title text-3xl text-slate-900 dark:text-white mb-2">Spentree</h1>
-          <p className="font-body text-slate-500 dark:text-slate-400">Securely manage your personal financial growth.</p>
+          <h1 className="text-2xl font-bold text-white mb-1">Spentree</h1>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
+            Track your finances, grow your wealth
+          </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800">
-          <h2 className="font-card-title text-xl text-slate-800 dark:text-white mb-8 text-center uppercase tracking-wide">
-            {isRegister ? 'Account Registration' : 'Member Login'}
+        {/* Glassmorphism Card */}
+        <div
+          style={{
+            background: 'rgba(255, 255, 255, 0.08)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            borderRadius: '24px',
+            padding: '40px',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)',
+          }}
+        >
+          <h2
+            className="text-center mb-6"
+            style={{ color: '#fff', fontSize: '20px', fontWeight: 600 }}
+          >
+            {isRegister ? 'Create Account' : 'Welcome Back'}
           </h2>
 
           {/* Messages */}
           {success && (
-            <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-4 py-3 rounded-lg text-sm font-body mb-6">
+            <div
+              style={{
+                background: 'rgba(34, 197, 94, 0.15)',
+                border: '1px solid rgba(34, 197, 94, 0.3)',
+                color: '#4ade80',
+                padding: '10px 14px',
+                borderRadius: '10px',
+                fontSize: '13px',
+                marginBottom: '16px',
+              }}
+            >
               {success}
             </div>
           )}
           {error && (
-            <div className="bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm font-body mb-6 flex items-center gap-2">
-              <span className="text-lg">⚠️</span>
-              {error}
+            <div
+              style={{
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                color: '#f87171',
+                padding: '10px 14px',
+                borderRadius: '10px',
+                fontSize: '13px',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              <span>⚠️</span> {error}
             </div>
           )}
 
-          {/* Form */}
+          {/* Forms */}
           {!isRegister ? (
-            <form onSubmit={handleLogin} className="space-y-6">
-              <div>
-                <label className="block font-label text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Gmail Address</label>
+            <form onSubmit={handleLogin}>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={labelStyle}>Gmail Address</label>
                 <input
                   type="email"
                   value={loginGmail}
-                  onChange={e => setLoginGmail(e.target.value)}
-                  className="input-field"
+                  onChange={(e) => setLoginGmail(e.target.value)}
+                  style={inputStyle}
                   placeholder="name@example.com"
                   autoComplete="email"
                   required
+                  onFocus={inputFocusHandler}
+                  onBlur={inputBlurHandler}
                 />
               </div>
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block font-label text-sm font-bold text-slate-700 dark:text-slate-300">Password</label>
-                  <button type="button" className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">Forgot Password?</button>
-                </div>
+              <div style={{ marginBottom: '24px' }}>
+                <label style={labelStyle}>Password</label>
                 <input
                   type="password"
                   value={loginPassword}
-                  onChange={e => setLoginPassword(e.target.value)}
-                  className="input-field"
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  style={inputStyle}
                   placeholder="••••••••"
                   autoComplete="current-password"
                   required
+                  onFocus={inputFocusHandler}
+                  onBlur={inputBlurHandler}
                 />
               </div>
 
-              <button type="submit" className="btn-primary w-full py-4 font-bold shadow-lg shadow-blue-500/25" disabled={loading}>
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="spinner" />
-                    Authenticating...
-                  </span>
-                ) : (
-                  'Login'
-                )}
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  background: 'linear-gradient(135deg, #1e3a5f, #22c55e)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  cursor: loading ? 'wait' : 'pointer',
+                  opacity: loading ? 0.7 : 1,
+                  transition: 'all 0.3s ease',
+                }}
+                onMouseEnter={(e) => { if (!loading) e.target.style.filter = 'brightness(1.15)'; }}
+                onMouseLeave={(e) => { e.target.style.filter = 'brightness(1)'; }}
+              >
+                {loading ? 'Authenticating...' : 'Login'}
               </button>
             </form>
           ) : (
-            <form onSubmit={handleRegister} className="space-y-5">
-              <div>
-                <label className="block font-label text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Gmail Address</label>
+            <form onSubmit={handleRegister}>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={labelStyle}>Gmail Address</label>
                 <input
                   type="email"
                   value={regGmail}
-                  onChange={e => setRegGmail(e.target.value)}
-                  className="input-field"
+                  onChange={(e) => setRegGmail(e.target.value)}
+                  style={inputStyle}
                   placeholder="name@gmail.com"
                   autoComplete="email"
                   required
+                  onFocus={inputFocusHandler}
+                  onBlur={inputBlurHandler}
                 />
               </div>
-              <div>
-                <label className="block font-label text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={labelStyle}>Full Name</label>
                 <input
                   type="text"
                   value={regUsername}
-                  onChange={e => setRegUsername(e.target.value)}
-                  className="input-field"
+                  onChange={(e) => setRegUsername(e.target.value)}
+                  style={inputStyle}
                   placeholder="e.g. John Doe"
                   autoComplete="username"
                   required
+                  onFocus={inputFocusHandler}
+                  onBlur={inputBlurHandler}
                 />
               </div>
-              <div>
-                <label className="block font-label text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Create Password</label>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={labelStyle}>Password</label>
                 <input
                   type="password"
                   value={regPassword}
-                  onChange={e => setRegPassword(e.target.value)}
-                  className="input-field"
+                  onChange={(e) => setRegPassword(e.target.value)}
+                  style={inputStyle}
                   placeholder="••••••••"
                   autoComplete="new-password"
                   required
+                  onFocus={inputFocusHandler}
+                  onBlur={inputBlurHandler}
                 />
               </div>
-              <div>
-                <label className="block font-label text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Confirm Password</label>
+              <div style={{ marginBottom: '24px' }}>
+                <label style={labelStyle}>Confirm Password</label>
                 <input
                   type="password"
                   value={regConfirmPassword}
-                  onChange={e => setRegConfirmPassword(e.target.value)}
-                  className="input-field"
+                  onChange={(e) => setRegConfirmPassword(e.target.value)}
+                  style={inputStyle}
                   placeholder="••••••••"
                   autoComplete="new-password"
                   required
+                  onFocus={inputFocusHandler}
+                  onBlur={inputBlurHandler}
                 />
               </div>
 
-              <button type="submit" className="btn-primary w-full py-4 font-bold shadow-lg shadow-blue-500/25 mt-4" disabled={loading}>
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="spinner" />
-                    Creating account...
-                  </span>
-                ) : (
-                  'Create Account'
-                )}
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  background: 'linear-gradient(135deg, #1e3a5f, #22c55e)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  cursor: loading ? 'wait' : 'pointer',
+                  opacity: loading ? 0.7 : 1,
+                  transition: 'all 0.3s ease',
+                }}
+                onMouseEnter={(e) => { if (!loading) e.target.style.filter = 'brightness(1.15)'; }}
+                onMouseLeave={(e) => { e.target.style.filter = 'brightness(1)'; }}
+              >
+                {loading ? 'Creating Account...' : 'Create Account'}
               </button>
             </form>
           )}
 
-          {/* Toggle Link */}
-          <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
-            <p className="font-body text-sm text-slate-500 dark:text-slate-400">
-              {isRegister ? 'Already using Spentree?' : "New to Spentree?"}{' '}
-              <button
-                onClick={() => switchTab(!isRegister)}
-                className="font-bold text-blue-600 hover:text-blue-700 transition-colors"
-              >
-                {isRegister ? 'Login here' : 'Sign up for free'}
-              </button>
-            </p>
-          </div>
+          {/* Switch link */}
+          <p
+            className="text-center mt-6"
+            style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}
+          >
+            {isRegister ? 'Already have an account? ' : 'New to Spentree? '}
+            <button
+              onClick={() => switchTab(!isRegister)}
+              style={{
+                color: '#22c55e',
+                fontWeight: 700,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '14px',
+              }}
+            >
+              {isRegister ? 'Login' : 'Sign up'}
+            </button>
+          </p>
         </div>
-
-        {/* Footer info */}
-        <p className="mt-10 text-center font-label text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">
-          High-Security Financial Monitoring
-        </p>
-      </div>
-    </div>
+      </motion.div>
+    </AuroraBackground>
   );
 }

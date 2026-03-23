@@ -3,22 +3,22 @@
 /* ========== Dark Theme (Default) ========== */
 :root {
   --bg-primary: #0d1117;
-  --bg-secondary: #0d1117;
-  --bg-card: #1c2128;
-  --bg-card-hover: #21262d;
-  --bg-sidebar: #161b22;
-  --bg-sidebar-solid: #161b22;
-  --bg-header: rgba(22, 27, 34, 0.95);
-  --bg-input: #0d1117;
-  --bg-surface: rgba(22, 27, 34, 0.7);
-  --bg-surface-solid: rgba(28, 33, 40, 0.8);
-  --bg-overlay: rgba(0, 0, 0, 0.6);
+  --bg-secondary: transparent;
+  --bg-card: rgba(30, 30, 30, 0.6);
+  --bg-card-hover: rgba(255, 255, 255, 0.1);
+  --bg-sidebar: rgba(13, 17, 23, 0.7);
+  --bg-sidebar-solid: rgba(13, 17, 23, 0.7);
+  --bg-header: rgba(13, 17, 23, 0.5);
+  --bg-input: rgba(255, 255, 255, 0.08);
+  --bg-surface: rgba(30, 30, 30, 0.6);
+  --bg-surface-solid: rgba(30, 30, 30, 0.7);
+  --bg-overlay: rgba(0, 0, 0, 0.5);
   --bg-subtle: rgba(255, 255, 255, 0.03);
-  --bg-subtle-hover: #21262d;
+  --bg-subtle-hover: rgba(255, 255, 255, 0.08);
 
-  /* GitHub Premium Gradients */
-  --bg-grad-card: linear-gradient(180deg, #1c2128 0%, #0d1117 100%);
-  --bg-grad-hover: linear-gradient(180deg, #21262d 0%, #1c2128 100%);
+  /* Glass Card Style */
+  --bg-grad-card: rgba(30, 30, 30, 0.6);
+  --bg-grad-hover: rgba(255, 255, 255, 0.06);
 
   --color-primary: #58a6ff;
   --color-primary-dark: #1f6feb;
@@ -30,52 +30,80 @@
   --color-success: #3fb950;
   --color-info: #58a6ff;
 
-  --color-text: #e6edf3;
+  --color-text: #ffffff;
   --color-text-heading: #ffffff;
-  --color-text-secondary: #e6edf3;
-  --color-text-muted: #8b949e;
-  --color-text-faint: #7d8590;
-  --color-text-disabled: #484f58;
+  --color-text-secondary: rgba(255, 255, 255, 0.9);
+  --color-text-muted: rgba(255, 255, 255, 0.5);
+  --color-text-faint: rgba(255, 255, 255, 0.4);
+  --color-text-disabled: rgba(255, 255, 255, 0.2);
 
-  --color-border: #30363d;
-  --color-border-subtle: rgba(48, 54, 61, 0.4);
-  --color-border-accent: rgba(88, 166, 255, 0.15);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-accent: rgba(88, 166, 255, 0.2);
 
-  --sidebar-nav-text: #8b949e;
-  --sidebar-nav-text-hover: #e6edf3;
-  --sidebar-nav-active-bg: #1f6feb;
-  --sidebar-nav-active-shadow: 0 4px 12px rgba(31, 111, 235, 0.3);
-  --sidebar-label-color: #484f58;
-  --sidebar-tagline-color: #8b949e;
-  --sidebar-logout-color: #8b949e;
-  --sidebar-logout-bg: rgba(248, 81, 73, 0.05);
-  --sidebar-logout-border: rgba(248, 81, 73, 0.1);
-  --sidebar-border-color: #30363d;
-  --sidebar-shadow: 4px 0 24px rgba(0, 0, 0, 0.6);
-  --sidebar-profile-bg: rgba(255, 255, 255, 0.02);
-  --sidebar-profile-border: rgba(255, 255, 255, 0.05);
-  --sidebar-xp-track: rgba(0, 0, 0, 0.3);
-  --sidebar-xp-sub: #30363d;
+  --sidebar-nav-text: rgba(255, 255, 255, 0.6);
+  --sidebar-nav-text-hover: #ffffff;
+  --sidebar-nav-active-bg: rgba(255, 255, 255, 0.1);
+  --sidebar-nav-active-shadow: none;
+  --sidebar-label-color: rgba(255, 255, 255, 0.3);
+  --sidebar-tagline-color: rgba(255, 255, 255, 0.4);
+  --sidebar-logout-color: rgba(255, 255, 255, 0.5);
+  --sidebar-logout-bg: rgba(248, 81, 73, 0.08);
+  --sidebar-logout-border: rgba(248, 81, 73, 0.15);
+  --sidebar-border-color: rgba(255, 255, 255, 0.08);
+  --sidebar-shadow: none;
+  --sidebar-profile-bg: rgba(255, 255, 255, 0.06);
+  --sidebar-profile-border: rgba(255, 255, 255, 0.08);
+  --sidebar-xp-track: rgba(255, 255, 255, 0.1);
+  --sidebar-xp-sub: rgba(255, 255, 255, 0.2);
 
-  --login-gradient: radial-gradient(circle at center, #161b22 0%, #0d1117 100%);
-  --login-card-bg: #1c2128;
-  --login-card-border: #30363d;
-  --login-tab-bg: #0d1117;
-  --login-tab-active-income: rgba(63, 185, 80, 0.1);
-  --login-tab-active-expense: rgba(248, 81, 73, 0.1);
+  --login-gradient: transparent;
+  --login-card-bg: rgba(30, 30, 30, 0.6);
+  --login-card-border: rgba(255, 255, 255, 0.1);
+  --login-tab-bg: rgba(255, 255, 255, 0.05);
+  --login-tab-active-income: rgba(63, 185, 80, 0.15);
+  --login-tab-active-expense: rgba(248, 81, 73, 0.15);
 
-  --chart-text: #8b949e;
-  --chart-grid: rgba(48, 54, 61, 0.3);
-  --chart-tooltip-bg: #161b22;
-  --chart-tooltip-text: #e6edf3;
-  --chart-tooltip-body: #8b949e;
-  --chart-tooltip-border: #30363d;
+  --chart-text: rgba(255, 255, 255, 0.6);
+  --chart-grid: rgba(255, 255, 255, 0.08);
+  --chart-tooltip-bg: rgba(30, 30, 30, 0.9);
+  --chart-tooltip-text: #ffffff;
+  --chart-tooltip-body: rgba(255, 255, 255, 0.6);
+  --chart-tooltip-border: rgba(255, 255, 255, 0.1);
 
   /* Premium Box Shadows */
-  --shadow-premium: 0 4px 24px rgba(0, 0, 0, 0.5);
-  --glow-blue: 0 0 16px rgba(88, 166, 255, 0.1);
-  --glow-green: 0 0 16px rgba(63, 185, 80, 0.1);
-  --glow-red: 0 0 16px rgba(248, 81, 73, 0.1);
+  --shadow-premium: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --glow-blue: 0 0 16px rgba(88, 166, 255, 0.08);
+  --glow-green: 0 0 16px rgba(63, 185, 80, 0.08);
+  --glow-red: 0 0 16px rgba(248, 81, 73, 0.08);
+
+  --mission-complete-bg: rgba(63, 185, 80, 0.1);
+  --mission-complete-border: rgba(63, 185, 80, 0.2);
+  --mission-pending-bg: rgba(255, 255, 255, 0.05);
+  --mission-pending-border: rgba(255, 255, 255, 0.08);
+
+  --badge-earned-bg: rgba(245, 158, 11, 0.08);
+  --badge-earned-border: rgba(245, 158, 11, 0.2);
+  --badge-earned-shadow: 0 0 20px rgba(245, 158, 11, 0.08);
+  --badge-locked-bg: rgba(255, 255, 255, 0.03);
+  --badge-locked-border: rgba(255, 255, 255, 0.06);
+
+  --profile-hero-bg: rgba(30, 30, 30, 0.6);
+  --profile-hero-border: rgba(255, 255, 255, 0.1);
+  --profile-hero-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --profile-circle-bg: rgba(255, 255, 255, 0.06);
+  --profile-quick-stat-bg: rgba(255, 255, 255, 0.08);
+  --profile-roadmap-line: rgba(255, 255, 255, 0.06);
+  --profile-roadmap-dot-inactive: rgba(255, 255, 255, 0.08);
+  --profile-savings-track: rgba(255, 255, 255, 0.08);
+
+  --toast-bg: rgba(30, 30, 30, 0.9);
+
+  --leaderboard-current-bg: rgba(88, 166, 255, 0.08);
+  --leaderboard-hover-bg: rgba(255, 255, 255, 0.05);
+  --leaderboard-border: rgba(255, 255, 255, 0.08);
+
+  --shimmer-color: rgba(255, 255, 255, 0.04);
 
   --transition-standard: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -83,7 +111,7 @@
   --radius: 12px;
   --radius-lg: 16px;
   --shadow-glow: none;
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.25);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.2);
 }
 
 /* ========== Light Theme ========== */
@@ -279,22 +307,24 @@ input, select, textarea, button { font-family: inherit; }
 .animate-counter-pulse { animation: counter-pulse 0.3s ease-in-out; }
 
 .card {
-  background: var(--bg-card);
-  background: var(--bg-grad-card);
-  border: 1px solid var(--color-border);
+  background: rgba(30, 30, 30, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius);
   padding: 1.5rem;
   transition: var(--transition-standard);
 }
 .card:hover {
-  border-color: var(--color-border-accent);
-  box-shadow: var(--shadow-premium), var(--glow-blue);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
 }
 .card-static {
-  background: var(--bg-card);
-  background: var(--bg-grad-card);
-  border: 1px solid var(--color-border);
+  background: rgba(30, 30, 30, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius);
   padding: 1.5rem;
   transition: var(--transition-standard);
@@ -424,11 +454,11 @@ input, select, textarea, button { font-family: inherit; }
 }
 
 .input-field {
-  background: var(--bg-input);
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius);
   padding: 0.85rem 1.25rem;
-  color: var(--color-text);
+  color: #ffffff;
   font-size: 16px;
   min-height: 48px;
   width: 100%;
@@ -436,13 +466,10 @@ input, select, textarea, button { font-family: inherit; }
   outline: none;
 }
 .input-field:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-glow);
+  border-color: #58a6ff;
+  box-shadow: 0 0 8px rgba(88, 166, 255, 0.25);
 }
-[data-theme="dark"] .input-field {
-  border-color: rgba(51, 65, 85, 0.5);
-}
-.input-field::placeholder { color: var(--color-text-muted); }
+.input-field::placeholder { color: rgba(255, 255, 255, 0.4); }
 
 .progress-bar-bg {
   background: var(--bg-input);

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { useTheme } from '../context/ThemeContext';
+import Aurora from './animations/Aurora';
 import { calculateLevel } from '../utils/gamification';
 import Notification from './Notification';
 import FloatingPoints from './FloatingPoints';
-import ThemeToggle from './ThemeToggle';
+
 
 // Page Title Mapping for Breadcrumb
 const getPageTitle = (pathname) => {
@@ -92,7 +92,7 @@ const NAV_ITEMS = [
 
 export default function Layout() {
   const { user, logout } = useApp();
-  const { theme } = useTheme();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
@@ -101,12 +101,22 @@ export default function Layout() {
   const level = calculateLevel(user.points);
 
   return (
-    <div className="flex min-h-screen" style={{ background: 'var(--bg-secondary)', transition: 'background-color 0.3s ease' }}>
+    <div className="flex min-h-screen relative" style={{ background: '#0d1117' }}>
+      {/* Global Aurora Background */}
+      <div className="fixed inset-0 z-0">
+        <Aurora
+          colorStops={["#3A29FF", "#FF9484", "#FF3232"]}
+          blend={0.5}
+          amplitude={1.0}
+          speed={1.0}
+        />
+      </div>
+
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-40 lg:hidden animate-fade-in"
-          style={{ background: 'var(--bg-overlay)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -119,50 +129,48 @@ export default function Layout() {
         style={{
           width: '260px',
           minWidth: '260px',
-          marginRight: '10px',
-          background: 'var(--bg-sidebar)',
-          color: 'var(--color-text)',
-          boxShadow: theme === 'dark' ? 'none' : 'var(--sidebar-shadow)',
+          background: 'rgba(13, 17, 23, 0.7)',
+          backdropFilter: 'blur(16px)',
+          color: '#e6edf3',
+          boxShadow: 'none',
+          borderRight: '1px solid rgba(255,255,255,0.06)',
         }}
       >
-        {/* ─── Logo Area ─── */}
-        <div className="px-6 py-8 flex items-center gap-3 border-b border-transparent dark:border-[#30363d]">
-          <div className="w-10 h-10 rounded-xl bg-white/10 dark:bg-[#58a6ff]/10 flex items-center justify-center backdrop-blur-sm border border-white/20 dark:border-[#58a6ff]/30 text-white dark:text-[#58a6ff]">
+        <div className="px-6 py-8 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#58a6ff]/10 flex items-center justify-center border border-[#58a6ff]/30 text-[#58a6ff]">
             {Icons.LogoTree}
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white dark:text-[#e6edf3] leading-none">Spentree</h1>
-            <p className="text-[11px] uppercase tracking-[0.15em] text-white/60 dark:text-[#8b949e] mt-1">Finance</p>
+            <h1 className="text-2xl font-bold tracking-tight text-[#e6edf3] leading-none">Spentree</h1>
+            <p className="text-[11px] uppercase tracking-[0.15em] text-[#8b949e] mt-1">Finance</p>
           </div>
-          {/* Mobile Close Button */}
           <button 
-            className="lg:hidden ml-auto p-2 text-white/70 hover:text-white transition-colors"
+            className="lg:hidden ml-auto p-2 text-[#8b949e] hover:text-white transition-colors"
             onClick={() => setSidebarOpen(false)}
           >
             {Icons.Close}
           </button>
         </div>
 
-        <div className="h-px bg-[#30363d] mx-6 hidden dark:block" />
+        <div className="h-px mx-6" style={{ background: 'rgba(255,255,255,0.08)' }} />
 
-        {/* ─── Main Navigation ─── */}
-        <nav className="flex-1 px-4 py-3 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 px-4 py-3 space-y-1 overflow-y-auto">
           {NAV_ITEMS.map(item => (
             <NavLink
               key={item.to}
               to={item.to}
               onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
-                `group flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-nav font-medium transition-all duration-200 border-l-4 border-transparent ${
+                `group flex items-center gap-3.5 px-4 py-3 rounded-lg font-nav font-medium transition-all duration-200 ${
                   isActive
-                    ? 'bg-white dark:bg-[#58a6ff]/10 text-[#1e3a5f] dark:text-[#58a6ff] shadow-[0_4px_12px_rgba(31,111,235,0.3)] dark:shadow-[0_0_15px_rgba(88,166,255,0.15)] dark:border-[#58a6ff]'
-                    : 'text-white/80 dark:text-[#8b949e] hover:bg-white/10 dark:hover:bg-[#21262d] hover:text-white dark:hover:text-[#e6edf3]'
+                    ? 'bg-white/10 text-[#58a6ff] border-l-4 border-[#58a6ff]'
+                    : 'text-white/60 hover:bg-white/10 hover:text-white border-l-4 border-transparent'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <div className={`transition-colors duration-200 ${isActive ? 'text-[#1e3a5f] dark:text-[#58a6ff]' : 'text-white/70 dark:text-[#58a6ff]'}`}>
+                  <div className={`transition-colors duration-200 ${isActive ? 'text-[#58a6ff]' : 'text-white/50'}`}>
                     {item.icon}
                   </div>
                   <span className="tracking-wide">{item.label}</span>
@@ -173,27 +181,26 @@ export default function Layout() {
         </nav>
 
         {/* ─── Bottom Section: Profile & Logout ─── */}
-        <div className="h-px bg-[#30363d] mx-6 hidden dark:block" />
+        <div className="h-px mx-6" style={{ background: 'rgba(255,255,255,0.08)' }} />
         <div className="p-4 mt-auto flex flex-col gap-[10px]">
-          {/* User Profile Mini */}
           <NavLink
             to="/profile"
             onClick={() => setSidebarOpen(false)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 dark:bg-[#161b22] border border-white/10 dark:border-[#30363d] hover:bg-white/10 dark:hover:bg-[#21262d] transition-colors"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 dark:from-[#58a6ff] dark:to-[#1f6feb] flex items-center justify-center text-white font-bold shadow-inner shrink-0">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#58a6ff] to-[#1f6feb] flex items-center justify-center text-white font-bold shrink-0">
               {user.username.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-body font-bold text-white dark:text-[#e6edf3] truncate leading-tight">{user.username}</p>
-              <p className="text-[11px] text-white/60 dark:text-[#8b949e] uppercase tracking-widest mt-0.5">Tier {level.tier}</p>
+              <p className="font-body font-bold text-[#e6edf3] truncate leading-tight">{user.username}</p>
+              <p className="text-[11px] text-[#8b949e] uppercase tracking-widest mt-0.5">Tier {level.tier}</p>
             </div>
           </NavLink>
 
-          {/* Logout Button */}
           <button
             onClick={logout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-body font-medium text-white/70 dark:text-[#8b949e] hover:text-white dark:hover:text-[#e6edf3] hover:bg-red-500/20 hover:border-red-500/30 border border-transparent transition-all duration-200 shrink-0"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-body font-medium text-white/50 hover:text-white hover:bg-red-500/20 border border-transparent transition-all duration-200 shrink-0"
           >
             {Icons.Logout}
             <span>Sign Out</span>
@@ -202,19 +209,18 @@ export default function Layout() {
       </aside>
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <div className="flex-1 flex flex-col min-h-screen min-w-0" style={{ background: 'var(--bg-primary)', transition: 'background-color 0.3s ease' }}>
+      <div className="flex-1 flex flex-col min-h-screen min-w-0 relative z-10">
         
-        {/* ═══════════════ TOP NAVBAR / HEADER ═══════════════ */}
         <header 
-          className="sticky top-0 z-30 w-full flex items-center justify-between px-6 lg:px-10 shrink-0 bg-white dark:bg-[#161b22] backdrop-blur-md border-b border-slate-200 dark:border-[#30363d] shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
-          style={{ height: '70px', transition: 'var(--transition-standard)' }}
+          className="sticky top-0 z-30 w-full flex items-center justify-between px-6 lg:px-10 shrink-0"
+          style={{ height: '70px', background: 'rgba(13, 17, 23, 0.5)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
         >
           {/* Left Side: Mobile Menu & Breadcrumb */}
           <div className="flex items-center gap-4">
             {/* Mobile Hamburger */}
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 -ml-2 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 transition-colors"
+              className="lg:hidden p-2 -ml-2 rounded-lg text-[#8b949e] hover:text-[#e6edf3] transition-colors"
               aria-label="Open menu"
             >
               {Icons.Menu}
@@ -222,27 +228,24 @@ export default function Layout() {
             
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 font-nav">
-              <span className="hidden sm:inline text-slate-400 font-medium">Pages</span>
-              <span className="hidden sm:inline text-slate-400">/</span>
-              <h2 className="font-page-title text-lg text-slate-800 dark:text-[#e6edf3] capitalize">{getPageTitle(location.pathname)}</h2>
+              <span className="hidden sm:inline text-white/50 font-medium">Pages</span>
+              <span className="hidden sm:inline text-white/50">/</span>
+              <h2 className="font-page-title text-lg text-white capitalize">{getPageTitle(location.pathname)}</h2>
             </div>
           </div>
 
           {/* Right Side: Actions & Profile */}
           <div className="flex items-center gap-3 lg:gap-5">
-            <ThemeToggle />
-            
-            <button className="relative p-2 text-slate-400 hover:text-slate-600 dark:text-[#58a6ff] dark:hover:text-[#58a6ff]/80 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-[#21262d] hidden sm:block">
+            <button className="relative p-2 text-[#58a6ff] hover:text-[#58a6ff]/80 transition-colors rounded-full hover:bg-[#1c2128] hidden sm:block">
               {Icons.Bell}
-              {/* Notification Dot indicator */}
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 border-2 border-white dark:border-[#161b22]"></span>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 border-2 border-[#0d1117]"></span>
             </button>
             
-            <div className="hidden sm:block w-px h-8 bg-slate-200 dark:bg-[#30363d] mx-1"></div>
+            <div className="hidden sm:block w-px h-8 mx-1" style={{ background: 'rgba(255,255,255,0.1)' }}></div>
             
             <div className="flex items-center gap-3">
-              <span className="hidden md:block font-body font-medium text-slate-700 dark:text-[#e6edf3]">{user.username}</span>
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 dark:bg-[#1f6feb] dark:from-transparent dark:to-transparent flex items-center justify-center text-white font-bold shadow-sm shrink-0 border-2 border-white dark:border-[#30363d]">
+              <span className="hidden md:block font-body font-medium text-[#e6edf3]">{user.username}</span>
+              <div className="w-9 h-9 rounded-full bg-[#1f6feb] flex items-center justify-center text-white font-bold shrink-0 border-2 border-[#21262d]">
                 {user.username.charAt(0).toUpperCase()}
               </div>
             </div>

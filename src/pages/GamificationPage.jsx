@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
-import { useTheme } from '../context/ThemeContext';
+
 import {
   calculateLevel, getNextLevel, getLevelProgress,
   getAllBadges, getLeaderboard,
