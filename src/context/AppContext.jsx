@@ -2,6 +2,19 @@ import { createContext, useContext, useState, useEffect, useCallback, useRef } f
 import { getItem, setItem, removeItem } from '../utils/storage';
 import { calculateLevel, checkBadgeEligibility, generateDailyMissions, updateMissionProgress } from '../utils/gamification';
 import { playCoinSound, playLevelUpSound, playBadgeSound } from '../utils/sounds';
+import { db } from '../firebase/config';
+import { 
+  collection, 
+  addDoc, 
+  deleteDoc, 
+  doc, 
+  onSnapshot, 
+  query, 
+  where, 
+  orderBy, 
+  setDoc,
+  getDoc
+} from 'firebase/firestore';
 
 const AppContext = createContext(null);
 
@@ -30,9 +43,55 @@ export function AppProvider({ children }) {
   const [floatingPoints, setFloatingPoints] = useState([]);
   const prevLevelRef = useRef(user ? calculateLevel(user.points).tier : 0);
 
-  // Persist state
-  useEffect(() => { if (user) setItem('spentree_user', user); }, [user]);
-  useEffect(() => { setItem('spentree_transactions', transactions); }, [transactions]);
+  // Sync Transactions from Firebase
+  useEffect(() => {
+    if (!user?.gmail) {
+      setTransactions([]);
+      return;
+    }
+
+    const q = query(
+      collection(db, 'transactions'),
+      where('userEmail', '==', user.gmail),
+      orderBy('date', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const txs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setTransactions(txs);
+    });
+
+    return () => unsubscribe();
+  }, [user?.gmail]);
+
+  // Sync User Stats from Firebase
+  useEffect(() => {
+    if (!user?.gmail) return;
+
+    const userDoc = doc(db, 'users', user.gmail);
+    const unsubscribe = onSnapshot(userDoc, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.data();
+        setUser(prev => ({ ...prev, ...data }));
+      }
+    });
+
+    return () => unsubscribe();
+  }, [user?.gmail]);
+
+  // Persist Local State (Keep as fallback)
+  useEffect(() => { 
+    if (user) {
+      setItem('spentree_user', user);
+      // Sync user profile to Firestore whenever it changes locally
+      const userRef = doc(db, 'users', user.gmail);
+      setDoc(userRef, user, { merge: true });
+    }
+  }, [user]);
+
   useEffect(() => {
     setItem('spentree_missions', dailyMissions);
     setItem('spentree_missions_date', todayStr());
@@ -84,17 +143,33 @@ export function AppProvider({ children }) {
     });
   }, [transactions, addNotification]);
 
-  const addTransaction = useCallback((tx) => {
-    const transaction = { ...tx, id: Date.now().toString() + Math.random().toString(36).slice(2) };
-    setTransactions(prev => [transaction, ...prev]);
-    playCoinSound();
-    addPoints(5);
-    showFloatingPoints(5);
-    addNotification(`+5 pts for logging ${tx.type}!`, 'success');
-  }, [addPoints, showFloatingPoints, addNotification]);
+  const addTransaction = useCallback(async (tx) => {
+    if (!user?.gmail) return;
+    
+    const transaction = { 
+      ...tx, 
+      userEmail: user.gmail,
+      createdAt: new Date().toISOString() 
+    };
 
-  const deleteTransaction = useCallback((id) => {
-    setTransactions(prev => prev.filter(t => t.id !== id));
+    try {
+      await addDoc(collection(db, 'transactions'), transaction);
+      playCoinSound();
+      addPoints(5);
+      showFloatingPoints(5);
+      addNotification(`+5 pts for logging ${tx.type}!`, 'success');
+    } catch (error) {
+      console.error("Error adding transaction: ", error);
+      addNotification("Failed to save to cloud", "error");
+    }
+  }, [user, addPoints, showFloatingPoints, addNotification]);
+
+  const deleteTransaction = useCallback(async (id) => {
+    try {
+      await deleteDoc(doc(db, 'transactions', id));
+    } catch (error) {
+      console.error("Error deleting transaction: ", error);
+    }
   }, []);
 
   const completeMission = useCallback((missionId, reward) => {
