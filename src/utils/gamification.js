@@ -1,4 +1,5 @@
 /* Pure gamification logic functions */
+export const todayStr = () => new Date().toISOString().split('T')[0];
 
 // ========== Levels ==========
 const LEVELS = [

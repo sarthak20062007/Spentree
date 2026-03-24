@@ -29,11 +29,22 @@ function AnimatedNumber({ value, duration = 1500, prefix = '', suffix = '' }) {
 }
 
 export default function DashboardPage() {
-  const { user, transactions, dailyMissions } = useApp();
+  const { user, transactions = [], dailyMissions = [] } = useApp();
 
-  const level = calculateLevel(user.points);
-  const nextLevel = getNextLevel(user.points);
-  const progress = getLevelProgress(user.points);
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] text-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="opacity-60 font-medium">Loading your Spentree...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const level = calculateLevel(user.points || 0);
+  const nextLevel = getNextLevel(user.points || 0);
+  const progress = getLevelProgress(user.points || 0);
 
   const stats = useMemo(() => {
     const income = transactions.filter(t => t.type === 'income').reduce((a, t) => a + t.amount, 0);
@@ -50,10 +61,10 @@ export default function DashboardPage() {
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
       const label = d.toLocaleString('en', { month: 'short' });
       const spent = transactions
-        .filter(t => t.type === 'expense' && t.date.startsWith(key))
+        .filter(t => t && t.type === 'expense' && typeof t.date === 'string' && t.date.startsWith(key))
         .reduce((a, t) => a + t.amount, 0);
       const earned = transactions
-        .filter(t => t.type === 'income' && t.date.startsWith(key))
+        .filter(t => t && t.type === 'income' && typeof t.date === 'string' && t.date.startsWith(key))
         .reduce((a, t) => a + t.amount, 0);
       months.push({ label, spent, earned });
     }
@@ -67,8 +78,9 @@ export default function DashboardPage() {
   // Category breakdown
   const categoryData = useMemo(() => {
     const cats = {};
-    transactions.filter(t => t.type === 'expense').forEach(t => {
-      cats[t.category] = (cats[t.category] || 0) + t.amount;
+    transactions.filter(t => t && t.type === 'expense').forEach(t => {
+      const cat = t.category || 'Other';
+      cats[cat] = (cats[cat] || 0) + t.amount;
     });
     const labels = Object.keys(cats);
     return {

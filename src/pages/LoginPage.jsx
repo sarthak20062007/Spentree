@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import AuroraBackground from '../components/animations/AuroraBackground';
 
 export default function LoginPage() {
-  const { login, register } = useApp();
+  const { login, register, loginWithGoogle } = useApp();
   const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
 
@@ -17,135 +17,43 @@ export default function LoginPage() {
   const [regGmail, setRegGmail] = useState('');
   const [regUsername, setRegUsername] = useState('');
   const [regPassword, setRegPassword] = useState('');
-  const [regConfirmPassword, setRegConfirmPassword] = useState('');
 
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
-    if (!loginGmail.trim()) { setError('Please enter your Gmail'); return; }
-    if (!isValidEmail(loginGmail.trim())) { setError('Please enter a valid Gmail address'); return; }
-    if (!loginPassword.trim()) { setError('Please enter your password'); return; }
-
     setLoading(true);
-    setTimeout(() => {
-      const result = login(loginGmail.trim().toLowerCase(), loginPassword);
-      setLoading(false);
-      if (result.success) {
-        navigate('/dashboard');
-      } else {
-        setError(result.message);
-      }
-    }, 500);
+    const result = await login(loginGmail.trim().toLowerCase(), loginPassword);
+    setLoading(false);
+    if (result.success) navigate('/dashboard');
+    else setError(result.message);
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
-    if (!regGmail.trim()) { setError('Please enter your Gmail'); return; }
-    if (!isValidEmail(regGmail.trim())) { setError('Please enter a valid Gmail address'); return; }
-    if (!regUsername.trim()) { setError('Please enter a username'); return; }
-    if (regUsername.trim().length < 3) { setError('Username must be at least 3 characters'); return; }
-    if (!regPassword.trim()) { setError('Please enter a password'); return; }
-    if (regPassword.length < 4) { setError('Password must be at least 4 characters'); return; }
-    if (regPassword !== regConfirmPassword) { setError('Passwords do not match'); return; }
-
     setLoading(true);
-    setTimeout(() => {
-      const result = register({
-        gmail: regGmail.trim().toLowerCase(),
-        username: regUsername.trim(),
-        password: regPassword,
-      });
-      setLoading(false);
-      if (result.success) {
-        setRegGmail('');
-        setRegUsername('');
-        setRegPassword('');
-        setRegConfirmPassword('');
-        setIsRegister(false);
-        setLoginGmail(regGmail.trim().toLowerCase());
-        setLoginPassword('');
-        setSuccess('✅ Account created! Please login.');
-      } else {
-        setError(result.message);
-      }
-    }, 600);
-  };
-
-  const switchTab = (toRegister) => {
-    setIsRegister(toRegister);
-    setError('');
-    setSuccess('');
-  };
-
-  // Shared input style
-  const inputStyle = {
-    background: 'rgba(255, 255, 255, 0.08)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    borderRadius: '12px',
-    color: '#fff',
-    padding: '14px 16px',
-    fontSize: '15px',
-    width: '100%',
-    outline: 'none',
-    transition: 'border-color 0.2s, box-shadow 0.2s',
-  };
-
-  const inputFocusHandler = (e) => {
-    e.target.style.borderColor = 'rgba(255,255,255,0.6)';
-    e.target.style.boxShadow = '0 0 12px rgba(255,255,255,0.15)';
-  };
-  const inputBlurHandler = (e) => {
-    e.target.style.borderColor = 'rgba(255,255,255,0.2)';
-    e.target.style.boxShadow = 'none';
-  };
-
-  const labelStyle = {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: '13px',
-    fontWeight: 600,
-    marginBottom: '6px',
-    display: 'block',
+    const result = await register({
+      gmail: regGmail.trim().toLowerCase(),
+      username: regUsername.trim(),
+      password: regPassword,
+    });
+    setLoading(false);
+    if (result.success) setIsRegister(false);
+    else setError(result.message);
   };
 
   return (
     <AuroraBackground>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-[420px] px-4"
-      >
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div
-            className="inline-flex items-center justify-center mx-auto mb-4"
-            style={{
-              width: '50px',
-              height: '50px',
-              background: 'rgba(255,255,255,0.15)',
-              borderRadius: '16px',
-              padding: '12px',
-            }}
-          >
-            <span className="text-2xl">🌳</span>
-          </div>
-          <h1 className="text-2xl font-bold text-white mb-1">Spentree</h1>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
-            Track your finances, grow your wealth
-          </p>
-        </div>
-
-        {/* Glassmorphism Card */}
-        <div
+      <div className="relative min-h-screen flex items-center justify-center p-4 w-full">
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative z-10 w-full max-w-[420px]"
           style={{
             background: 'rgba(255, 255, 255, 0.08)',
             backdropFilter: 'blur(20px)',
@@ -153,210 +61,180 @@ export default function LoginPage() {
             border: '1px solid rgba(255, 255, 255, 0.15)',
             borderRadius: '24px',
             padding: '40px',
-            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.3)'
           }}
         >
-          <h2
-            className="text-center mb-6"
-            style={{ color: '#fff', fontSize: '20px', fontWeight: 600 }}
-          >
+          {/* Logo Section */}
+          <div className="flex flex-col items-center mb-8">
+            <div 
+              className="flex items-center justify-center mb-4"
+              style={{
+                width: '50px',
+                height: '50px',
+                background: 'rgba(255, 255, 255, 0.15)',
+                borderRadius: '16px',
+                padding: '12px'
+              }}
+            >
+              <span style={{ fontSize: '26px', lineHeight: '1' }}>🌳</span>
+            </div>
+            <h1 className="text-white font-bold tracking-wide" style={{ fontSize: '24px', marginBottom: '4px' }}>
+              Spentree
+            </h1>
+            <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '13px', fontWeight: '400' }}>
+              Track your finances, grow your wealth
+            </p>
+          </div>
+
+          <h2 className="text-center text-white font-medium text-lg mb-6 tracking-wide">
             {isRegister ? 'Create Account' : 'Welcome Back'}
           </h2>
 
-          {/* Messages */}
-          {success && (
-            <div
+          <AnimatePresence mode="wait">
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="bg-red-500/20 text-red-200 p-3 rounded-xl mb-6 text-sm flex items-center gap-2 border border-red-500/30 backdrop-blur-md"
+              >
+                <span>⚠️</span> {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <form onSubmit={isRegister ? handleRegister : handleLogin} className="flex flex-col gap-[16px]">
+            
+            <div className="flex flex-col gap-1.5">
+              <label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '13px', fontWeight: '500' }}>
+                Gmail Address
+              </label>
+              <input 
+                type="email" 
+                placeholder="name@example.com"
+                className="w-full outline-none transition-all duration-300 focus:shadow-[0_0_15px_rgba(255,255,255,0.15)] focus:border-white/50 placeholder-white/50" 
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '12px',
+                  color: 'white',
+                  padding: '14px 16px',
+                  fontSize: '15px'
+                }}
+                value={isRegister ? regGmail : loginGmail} 
+                onChange={e => isRegister ? setRegGmail(e.target.value) : setLoginGmail(e.target.value)}
+                required
+              />
+            </div>
+
+            {isRegister && (
+              <div className="flex flex-col gap-1.5">
+                <label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '13px', fontWeight: '500' }}>
+                  Username
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="Your name"
+                  className="w-full outline-none transition-all duration-300 focus:shadow-[0_0_15px_rgba(255,255,255,0.15)] focus:border-white/50 placeholder-white/50" 
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '12px',
+                    color: 'white',
+                    padding: '14px 16px',
+                    fontSize: '15px'
+                  }}
+                  value={regUsername} 
+                  onChange={e => setRegUsername(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+
+            <div className="flex flex-col gap-1.5">
+              <label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '13px', fontWeight: '500' }}>
+                Password
+              </label>
+              <input 
+                type="password" 
+                placeholder="••••••••" 
+                className="w-full outline-none transition-all duration-300 focus:shadow-[0_0_15px_rgba(255,255,255,0.15)] focus:border-white/50 placeholder-white/50 tracking-widest"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '12px',
+                  color: 'white',
+                  padding: '14px 16px',
+                  fontSize: '15px'
+                }}
+                value={isRegister ? regPassword : loginPassword} 
+                onChange={e => isRegister ? setRegPassword(e.target.value) : setLoginPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <motion.button 
+              whileHover={{ filter: 'brightness(1.15)', scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full text-white font-bold transition-all duration-300 mt-2 flex items-center justify-center cursor-pointer shadow-xl shadow-green-900/20"
               style={{
-                background: 'rgba(34, 197, 94, 0.15)',
-                border: '1px solid rgba(34, 197, 94, 0.3)',
-                color: '#4ade80',
-                padding: '10px 14px',
-                borderRadius: '10px',
-                fontSize: '13px',
-                marginBottom: '16px',
+                background: 'linear-gradient(135deg, #1e3a5f, #22c55e)',
+                borderRadius: '12px',
+                padding: '14px',
+                fontSize: '16px'
+              }}
+              disabled={loading}
+            >
+              {loading ? 'Processing...' : (isRegister ? 'Register' : 'Login')}
+            </motion.button>
+
+            {/* Google Sign In Option */}
+            <div className="relative flex items-center py-1 mt-1 opacity-70">
+              <div className="flex-grow border-t border-white/20"></div>
+              <span className="flex-shrink-0 mx-4 text-white/60 text-[11px] font-semibold tracking-wider uppercase">OR</span>
+              <div className="flex-grow border-t border-white/20"></div>
+            </div>
+
+            <motion.button 
+              type="button"
+              whileHover={{ background: 'rgba(255, 255, 255, 0.15)', scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={async () => {
+                setLoading(true);
+                const res = await loginWithGoogle();
+                setLoading(false);
+                if (res.success) navigate('/dashboard');
+                else setError(res.message);
+              }}
+              className="w-full flex items-center justify-center gap-3 text-white font-medium transition-all duration-300 cursor-pointer shadow-sm"
+              style={{
+                background: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '12px',
+                padding: '14px',
+                fontSize: '15px'
               }}
             >
-              {success}
-            </div>
-          )}
-          {error && (
-            <div
-              style={{
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                color: '#f87171',
-                padding: '10px 14px',
-                borderRadius: '10px',
-                fontSize: '13px',
-                marginBottom: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-              }}
-            >
-              <span>⚠️</span> {error}
-            </div>
-          )}
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="Google" />
+              Sign in with Google
+            </motion.button>
+          </form>
 
-          {/* Forms */}
-          {!isRegister ? (
-            <form onSubmit={handleLogin}>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={labelStyle}>Gmail Address</label>
-                <input
-                  type="email"
-                  value={loginGmail}
-                  onChange={(e) => setLoginGmail(e.target.value)}
-                  style={inputStyle}
-                  placeholder="name@example.com"
-                  autoComplete="email"
-                  required
-                  onFocus={inputFocusHandler}
-                  onBlur={inputBlurHandler}
-                />
-              </div>
-              <div style={{ marginBottom: '24px' }}>
-                <label style={labelStyle}>Password</label>
-                <input
-                  type="password"
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  style={inputStyle}
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  required
-                  onFocus={inputFocusHandler}
-                  onBlur={inputBlurHandler}
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                style={{
-                  width: '100%',
-                  padding: '14px',
-                  background: 'linear-gradient(135deg, #1e3a5f, #22c55e)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  fontWeight: 700,
-                  cursor: loading ? 'wait' : 'pointer',
-                  opacity: loading ? 0.7 : 1,
-                  transition: 'all 0.3s ease',
-                }}
-                onMouseEnter={(e) => { if (!loading) e.target.style.filter = 'brightness(1.15)'; }}
-                onMouseLeave={(e) => { e.target.style.filter = 'brightness(1)'; }}
-              >
-                {loading ? 'Authenticating...' : 'Login'}
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleRegister}>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={labelStyle}>Gmail Address</label>
-                <input
-                  type="email"
-                  value={regGmail}
-                  onChange={(e) => setRegGmail(e.target.value)}
-                  style={inputStyle}
-                  placeholder="name@gmail.com"
-                  autoComplete="email"
-                  required
-                  onFocus={inputFocusHandler}
-                  onBlur={inputBlurHandler}
-                />
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={labelStyle}>Full Name</label>
-                <input
-                  type="text"
-                  value={regUsername}
-                  onChange={(e) => setRegUsername(e.target.value)}
-                  style={inputStyle}
-                  placeholder="e.g. John Doe"
-                  autoComplete="username"
-                  required
-                  onFocus={inputFocusHandler}
-                  onBlur={inputBlurHandler}
-                />
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={labelStyle}>Password</label>
-                <input
-                  type="password"
-                  value={regPassword}
-                  onChange={(e) => setRegPassword(e.target.value)}
-                  style={inputStyle}
-                  placeholder="••••••••"
-                  autoComplete="new-password"
-                  required
-                  onFocus={inputFocusHandler}
-                  onBlur={inputBlurHandler}
-                />
-              </div>
-              <div style={{ marginBottom: '24px' }}>
-                <label style={labelStyle}>Confirm Password</label>
-                <input
-                  type="password"
-                  value={regConfirmPassword}
-                  onChange={(e) => setRegConfirmPassword(e.target.value)}
-                  style={inputStyle}
-                  placeholder="••••••••"
-                  autoComplete="new-password"
-                  required
-                  onFocus={inputFocusHandler}
-                  onBlur={inputBlurHandler}
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                style={{
-                  width: '100%',
-                  padding: '14px',
-                  background: 'linear-gradient(135deg, #1e3a5f, #22c55e)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  fontWeight: 700,
-                  cursor: loading ? 'wait' : 'pointer',
-                  opacity: loading ? 0.7 : 1,
-                  transition: 'all 0.3s ease',
-                }}
-                onMouseEnter={(e) => { if (!loading) e.target.style.filter = 'brightness(1.15)'; }}
-                onMouseLeave={(e) => { e.target.style.filter = 'brightness(1)'; }}
-              >
-                {loading ? 'Creating Account...' : 'Create Account'}
-              </button>
-            </form>
-          )}
-
-          {/* Switch link */}
-          <p
-            className="text-center mt-6"
-            style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}
-          >
-            {isRegister ? 'Already have an account? ' : 'New to Spentree? '}
-            <button
-              onClick={() => switchTab(!isRegister)}
-              style={{
-                color: '#22c55e',
-                fontWeight: 700,
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '14px',
-              }}
+          <div className="text-center mt-8">
+            <span style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px' }}>
+              {isRegister ? 'Already have an account? ' : 'New to Spentree? '} 
+            </span>
+            <button 
+              onClick={() => setIsRegister(!isRegister)}
+              className="font-medium hover:underline transition-all cursor-pointer tracking-wide"
+              style={{ color: '#22c55e', fontSize: '14px' }}
             >
               {isRegister ? 'Login' : 'Sign up'}
             </button>
-          </p>
-        </div>
-      </motion.div>
+          </div>
+          
+        </motion.div>
+      </div>
     </AuroraBackground>
   );
 }
