@@ -101,7 +101,7 @@ export default function Layout() {
   const level = calculateLevel(user.points);
 
   return (
-    <div className="flex min-h-screen relative" style={{ background: '#0d1117' }}>
+    <div className="flex min-h-screen relative" style={{ background: 'transparent' }}>
       {/* Global Aurora Background */}
       <div className="fixed inset-0 z-0">
         <Aurora
@@ -209,14 +209,14 @@ export default function Layout() {
       </aside>
 
       {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-      <div className="flex-1 flex flex-col min-h-screen min-w-0 relative z-10">
+      <div className="flex-1 flex flex-col min-h-screen min-w-0 relative z-10 px-8 py-6 gap-6">
         
         <header 
-          className="sticky top-0 z-30 w-full flex items-center justify-between px-6 lg:px-10 shrink-0"
-          style={{ height: '70px', background: 'rgba(13, 17, 23, 0.5)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+          className="sticky top-0 z-30 w-full flex items-center justify-between shrink-0 rounded-2xl"
+          style={{ height: '70px', background: 'rgba(13, 17, 23, 0.7)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
         >
           {/* Left Side: Mobile Menu & Breadcrumb */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 px-6 lg:px-10">
             {/* Mobile Hamburger */}
             <button
               onClick={() => setSidebarOpen(true)}
@@ -235,7 +235,7 @@ export default function Layout() {
           </div>
 
           {/* Right Side: Actions & Profile */}
-          <div className="flex items-center gap-3 lg:gap-5">
+          <div className="flex items-center gap-3 lg:gap-5 px-6 lg:px-10">
             <button className="relative p-2 text-[#58a6ff] hover:text-[#58a6ff]/80 transition-colors rounded-full hover:bg-[#1c2128] hidden sm:block">
               {Icons.Bell}
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 border-2 border-[#0d1117]"></span>
@@ -253,7 +253,7 @@ export default function Layout() {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-6 md:p-8 lg:p-10 lg:pt-6 lg:pb-12 overflow-x-hidden">
+        <main className="flex-1 py-10 pb-20 overflow-x-hidden rounded-2xl" style={{ background: 'rgba(13, 17, 23, 0.5)', border: '1px solid rgba(255,255,255,0.06)' }}>
           <Outlet />
         </main>
       </div>

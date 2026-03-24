@@ -23,31 +23,20 @@ export default function ProfilePage() {
       ? Math.round(totalExpense / transactions.filter(t => t.type === 'expense').length)
       : 0;
 
-    // Top spending category
     const catMap = {};
     transactions.filter(t => t.type === 'expense').forEach(t => {
       catMap[t.category] = (catMap[t.category] || 0) + t.amount;
     });
     const topCategory = Object.entries(catMap).sort((a, b) => b[1] - a[1])[0];
-
-    // Active days (unique dates with transactions)
     const uniqueDates = new Set(transactions.map(t => t.date));
-
-    // Streak info
     const streak = user.loginStreak || 0;
 
     return {
-      totalTransactions: transactions.length,
-      totalIncome,
-      totalExpense,
-      avgExpense,
+      totalTransactions: transactions.length, totalIncome, totalExpense, avgExpense,
       netSavings: totalIncome - totalExpense,
       savingsRate: totalIncome > 0 ? Math.round(((totalIncome - totalExpense) / totalIncome) * 100) : 0,
       topCategory: topCategory ? { name: topCategory[0], amount: topCategory[1] } : null,
-      activeDays: uniqueDates.size,
-      streak,
-      badgesEarned: earnedBadges.length,
-      totalBadges: badges.length,
+      activeDays: uniqueDates.size, streak, badgesEarned: earnedBadges.length, totalBadges: badges.length,
     };
   }, [transactions, user, earnedBadges, badges]);
 
@@ -60,7 +49,6 @@ export default function ProfilePage() {
     return { title: 'Free Spirit 🌊', desc: "You're spending more than you earn. Consider reviewing your budget!", color: '#ef4444' };
   }, [stats, transactions]);
 
-  // ── Level Milestones ──
   const milestones = [
     { tier: 1, name: 'Seedling',      emoji: '🌱', pts: 0,    unlocks: 'Begin your journey' },
     { tier: 2, name: 'Sprout',        emoji: '🌿', pts: 50,   unlocks: 'Daily Mission Tracking' },
@@ -73,16 +61,16 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="space-y-8">
-      {/* ═══ Header ═══ */}
+    <div className="flex flex-col" style={{ gap: '40px' }}>
+      {/* Header */}
       <div>
-        <h1 className="font-page-title" style={{ color: 'var(--color-text-heading)' }}>👤 My Profile</h1>
-        <p className="font-body mt-2" style={{ color: 'var(--color-text-muted)' }}>Your journey, stats, and achievements at a glance</p>
+        <h1 className="text-3xl font-bold mb-1" style={{ color: 'var(--color-text-heading)' }}>👤 My Profile</h1>
+        <p className="text-sm opacity-50" style={{ color: 'var(--color-text-muted)' }}>Your journey, stats, and achievements at a glance</p>
       </div>
 
-      {/* ═══ Profile Hero Card ═══ */}
+      {/* Profile Header Card */}
       <div
-        className="rounded-3xl p-8 md:p-10 relative overflow-hidden"
+        className="p-8 rounded-2xl border border-white/10 relative overflow-hidden"
         style={{
           background: 'var(--profile-hero-bg)',
           border: `1px solid var(--profile-hero-border)`,
@@ -94,10 +82,10 @@ export default function ProfilePage() {
         <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full" style={{ background: 'radial-gradient(circle, #f59e0b, transparent)', transform: 'translate(-30%, 30%)', opacity: 0.06 }} />
 
         <div className="relative flex flex-col md:flex-row items-center md:items-start gap-8">
-          {/* Large avatar */}
+          {/* Avatar */}
           <div className="shrink-0">
             <div
-              className="w-32 h-32 rounded-[2rem] flex items-center justify-center font-page-title !text-5xl"
+              className="w-24 h-24 rounded-2xl flex items-center justify-center text-4xl font-bold"
               style={{
                 background: 'linear-gradient(135deg, #22c55e, #16a34a)',
                 color: '#fff',
@@ -113,29 +101,23 @@ export default function ProfilePage() {
 
           {/* Info */}
           <div className="flex-1 text-center md:text-left">
-            <h2 className="font-page-title text-white !text-[32px]">{user.username}</h2>
-            <div className="flex items-center justify-center md:justify-start gap-3 mt-3">
-              <span
-                className="font-label font-bold px-4 py-1.5 rounded-full tracking-wide"
-                style={{ background: 'rgba(34,197,94,0.15)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.2)' }}
-              >
+            <h2 className="text-2xl font-bold mb-2 text-white">{user.username}</h2>
+            <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+              <span className="text-xs font-bold px-3 py-1.5 rounded-full" style={{ background: 'rgba(34,197,94,0.15)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.2)' }}>
                 {level.emoji} {level.name}
               </span>
-              <span
-                className="font-label font-bold px-4 py-1.5 rounded-full tracking-wide"
-                style={{ background: 'rgba(245,158,11,0.12)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.2)' }}
-              >
+              <span className="text-xs font-bold px-3 py-1.5 rounded-full" style={{ background: 'rgba(245,158,11,0.12)', color: '#fbbf24', border: '1px solid rgba(245,158,11,0.2)' }}>
                 Tier {level.tier}
               </span>
             </div>
 
             {/* XP Bar */}
-            <div className="mt-6 max-w-lg mx-auto md:mx-0">
-              <div className="flex justify-between font-label font-bold mb-2">
+            <div className="max-w-lg mx-auto md:mx-0 mt-3 mb-1">
+              <div className="flex justify-between text-xs font-bold mb-2">
                 <span className="text-amber-400">{user.points} XP</span>
-                <span style={{ color: 'rgba(255,255,255,0.6)' }}>{nextLevel ? `${nextLevel.minPoints} XP` : 'MAX'}</span>
+                <span className="text-white/60">{nextLevel ? `${nextLevel.minPoints} XP` : 'MAX'}</span>
               </div>
-              <div className="h-4 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.4)' }}>
+              <div className="h-3 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.4)' }}>
                 <div
                   className="h-full rounded-full transition-all duration-1000 ease-out"
                   style={{
@@ -145,13 +127,13 @@ export default function ProfilePage() {
                   }}
                 />
               </div>
-              <p className="font-label mt-2.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              <p className="text-xs text-white/50 mt-2">
                 {nextLevel ? `${nextLevel.minPoints - user.points} XP until ${nextLevel.name} ${nextLevel.treeEmoji}` : '🏆 Maximum level reached!'}
               </p>
             </div>
 
-            {/* Quick stats row */}
-            <div className="flex flex-wrap gap-4 mt-8 justify-center md:justify-start">
+            {/* Stats Row */}
+            <div className="flex flex-wrap gap-6 mt-4 justify-center md:justify-start">
               <QuickStat icon="🔥" label="Streak" value={`${stats.streak} day${stats.streak !== 1 ? 's' : ''}`} />
               <QuickStat icon="🏅" label="Badges" value={`${stats.badgesEarned}/${stats.totalBadges}`} />
               <QuickStat icon="📝" label="Entries" value={stats.totalTransactions} />
@@ -161,113 +143,90 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ═══ Spending Personality ═══ */}
-      <div
-        className="card-static !p-6"
-        style={{ borderLeft: `6px solid ${personality.color}` }}
-      >
-        <div className="flex items-center gap-5">
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shrink-0"
-            style={{ background: `${personality.color}15` }}
-          >
-            {personality.title.split(' ').pop()}
-          </div>
-          <div>
-            <h3 className="font-card-title mb-1" style={{ color: 'var(--color-text-heading)' }}>Your Spending Personality</h3>
-            <p className="font-page-title" style={{ color: personality.color }}>
-              {personality.title}
-            </p>
-            <p className="font-body mt-2" style={{ color: 'var(--color-text-muted)' }}>{personality.desc}</p>
-          </div>
+      {/* Spending Personality */}
+      <div className="p-6 rounded-2xl border border-white/10 bg-white/5 flex items-center gap-4" style={{ borderLeft: `6px solid ${personality.color}` }}>
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ background: `${personality.color}15` }}>
+          {personality.title.split(' ').pop()}
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold mb-1 text-white/70">Your Spending Personality</h3>
+          <p className="text-xl font-bold" style={{ color: personality.color }}>{personality.title}</p>
+          <p className="text-sm mt-1 text-white/50">{personality.desc}</p>
         </div>
       </div>
 
-      {/* ═══ Stats Grid ═══ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* 4 Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard icon="💰" label="Total Income" value={`₹${stats.totalIncome.toLocaleString()}`} color="#22c55e" />
         <StatCard icon="💸" label="Total Expenses" value={`₹${stats.totalExpense.toLocaleString()}`} color="#ef4444" />
         <StatCard icon="🐷" label="Net Savings" value={`₹${stats.netSavings.toLocaleString()}`} color={stats.netSavings >= 0 ? '#f59e0b' : '#ef4444'} />
         <StatCard icon="📊" label="Avg Expense" value={`₹${stats.avgExpense.toLocaleString()}`} color="#3b82f6" />
       </div>
 
-      {/* ═══ Savings Rate + Top Category ═══ */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Savings Rate Gauge */}
-        <div className="card-static !p-6 text-center">
-          <h3 className="font-card-title mb-6" style={{ color: 'var(--color-text-secondary)' }}>💎 Savings Rate</h3>
+      {/* Savings Rate + Top Category */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="p-6 rounded-2xl border border-white/10 bg-white/5 text-center">
+          <h3 className="text-sm font-semibold mb-6 text-white/70">💎 Savings Rate</h3>
           <div className="relative inline-flex items-center justify-center">
             <svg width="180" height="180" viewBox="0 0 140 140">
               <circle cx="70" cy="70" r="60" fill="none" stroke="var(--profile-savings-track)" strokeWidth="12" />
               <circle
                 cx="70" cy="70" r="60" fill="none"
                 stroke={stats.savingsRate >= 25 ? '#22c55e' : stats.savingsRate >= 0 ? '#f59e0b' : '#ef4444'}
-                strokeWidth="12"
-                strokeLinecap="round"
+                strokeWidth="12" strokeLinecap="round"
                 strokeDasharray={`${Math.max(0, stats.savingsRate) * 3.77} 377`}
                 transform="rotate(-90 70 70)"
                 style={{ transition: 'stroke-dasharray 1s ease-out' }}
               />
             </svg>
             <div className="absolute text-center mt-2">
-              <p className="font-card-value !text-[42px]" style={{ color: 'var(--color-text-heading)' }}>{stats.savingsRate}%</p>
-              <p className="font-label" style={{ color: 'var(--color-text-faint)' }}>saved</p>
+              <p className="text-4xl font-bold text-white">{stats.savingsRate}%</p>
+              <p className="text-xs text-white/40">saved</p>
             </div>
           </div>
-          <p className="font-body mt-4 font-medium" style={{ color: 'var(--color-text-faint)' }}>
+          <p className="text-sm mt-4 text-white/50">
             {stats.savingsRate >= 50 ? 'Outstanding! 🌟' : stats.savingsRate >= 25 ? 'Great job! 👏' : stats.savingsRate >= 0 ? 'Room to grow 📈' : 'Needs attention ⚠️'}
           </p>
         </div>
 
-        {/* Top Category */}
-        <div className="card-static !p-6">
-          <h3 className="font-card-title mb-6" style={{ color: 'var(--color-text-secondary)' }}>🏷️ Top Spending Category</h3>
+        <div className="p-6 rounded-2xl border border-white/10 bg-white/5">
+          <h3 className="text-sm font-semibold mb-6 text-white/70">🏷️ Top Spending Category</h3>
           {stats.topCategory ? (
             <div className="text-center">
-              <div
-                className="w-24 h-24 rounded-2xl flex items-center justify-center text-5xl mx-auto mb-4"
-                style={{ background: `${CATEGORY_COLORS[stats.topCategory.name] || '#64748b'}18` }}
-              >
+              <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4" style={{ background: `${CATEGORY_COLORS[stats.topCategory.name] || '#64748b'}18` }}>
                 {CATEGORY_ICONS[stats.topCategory.name] || '📦'}
               </div>
-              <p className="font-page-title mb-1" style={{ color: 'var(--color-text-heading)' }}>{stats.topCategory.name}</p>
-              <p className="font-card-value" style={{ color: CATEGORY_COLORS[stats.topCategory.name] || '#64748b' }}>
+              <p className="text-xl font-bold mb-1 text-white">{stats.topCategory.name}</p>
+              <p className="font-bold text-lg" style={{ color: CATEGORY_COLORS[stats.topCategory.name] || '#64748b' }}>
                 ₹{stats.topCategory.amount.toLocaleString()}
               </p>
-              <p className="font-body mt-2" style={{ color: 'var(--color-text-faint)' }}>Highest spending area</p>
+              <p className="text-sm mt-2 text-white/40">Highest spending area</p>
             </div>
           ) : (
             <div className="text-center py-12">
-              <span className="text-6xl">📭</span>
-              <p className="font-body mt-4" style={{ color: 'var(--color-text-faint)' }}>No expenses logged yet</p>
+              <span className="text-4xl">📭</span>
+              <p className="text-sm mt-4 text-white/40">No expenses logged yet</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* ═══ Badges Showcase ═══ */}
-      <div className="card-static !p-6">
+      {/* Badges Showcase */}
+      <div className="p-6 rounded-2xl border border-white/10 bg-white/5">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="font-card-title" style={{ color: 'var(--color-text-secondary)' }}>🏅 Badge Showcase</h3>
-          <Link to="/gamification" className="font-label transition-colors" style={{ color: 'var(--color-primary)' }}>
+          <h3 className="text-sm font-semibold text-white/70">🏅 Badge Showcase</h3>
+          <Link to="/gamification" className="text-xs font-bold text-[#58a6ff] hover:text-[#58a6ff]/80 transition-colors">
             View all →
           </Link>
         </div>
         {earnedBadges.length > 0 ? (
           <div className="flex flex-wrap gap-4">
             {earnedBadges.map(b => (
-              <div
-                key={b.id}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                style={{
-                  background: 'rgba(245,158,11,0.08)',
-                  border: '1px solid rgba(245,158,11,0.15)',
-                }}
-              >
+              <div key={b.id} className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.15)' }}>
                 <span className="text-2xl">{b.icon}</span>
                 <div>
-                  <p className="font-label font-bold text-amber-500">{b.name}</p>
-                  <p className="text-xs" style={{ color: 'var(--color-text-faint)' }}>{b.desc}</p>
+                  <p className="text-xs font-bold text-amber-500">{b.name}</p>
+                  <p className="text-[11px] text-white/40">{b.desc}</p>
                 </div>
               </div>
             ))}
@@ -275,14 +234,14 @@ export default function ProfilePage() {
         ) : (
           <div className="text-center py-10">
             <span className="text-5xl">🔒</span>
-            <p className="font-body mt-4" style={{ color: 'var(--color-text-faint)' }}>No badges earned yet. Keep tracking!</p>
+            <p className="text-sm mt-4 text-white/40">No badges earned yet. Keep tracking!</p>
           </div>
         )}
       </div>
 
-      {/* ═══ Level Roadmap ═══ */}
-      <div className="card-static !p-6">
-        <h3 className="font-card-title mb-6" style={{ color: 'var(--color-text-secondary)' }}>🗺️ Level Roadmap</h3>
+      {/* Level Roadmap */}
+      <div className="p-6 rounded-2xl border border-white/10 bg-white/5">
+        <h3 className="text-sm font-semibold mb-6 text-white/70">🗺️ Level Roadmap</h3>
         <div className="space-y-2">
           {milestones.map((m, i) => {
             const reached = level.tier >= m.tier;
@@ -291,19 +250,11 @@ export default function ProfilePage() {
               <div
                 key={m.tier}
                 className="flex items-center gap-5 py-3.5 px-4 rounded-2xl transition-all"
-                style={
-                  current
-                    ? {
-                        background: 'var(--mission-complete-bg)',
-                        border: `1px solid var(--mission-complete-border)`,
-                      }
-                    : { border: '1px solid transparent' }
-                }
+                style={current ? { background: 'var(--mission-complete-bg)', border: `1px solid var(--mission-complete-border)` } : { border: '1px solid transparent' }}
               >
-                {/* Status dot / line */}
                 <div className="flex flex-col items-center w-10 shrink-0">
                   <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center font-label font-bold tracking-tighter"
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
                     style={{
                       background: reached ? '#22c55e' : 'var(--profile-roadmap-dot-inactive)',
                       color: reached ? '#fff' : 'var(--color-text-disabled)',
@@ -313,33 +264,20 @@ export default function ProfilePage() {
                     {reached ? '✓' : m.tier}
                   </div>
                   {i < milestones.length - 1 && (
-                    <div
-                      className="w-1 h-6 mt-1.5 rounded-full"
-                      style={{ background: reached ? 'rgba(34,197,94,0.3)' : 'var(--profile-roadmap-line)' }}
-                    />
+                    <div className="w-1 h-6 mt-1.5 rounded-full" style={{ background: reached ? 'rgba(34,197,94,0.3)' : 'var(--profile-roadmap-line)' }} />
                   )}
                 </div>
-
-                {/* Info */}
                 <span className="text-2xl w-10 text-center">{m.emoji}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-0.5">
-                    <p className="font-card-title" style={{ color: reached ? 'var(--color-text-heading)' : 'var(--color-text-faint)' }}>
-                      {m.name}
-                    </p>
+                    <p className="font-semibold text-sm" style={{ color: reached ? 'var(--color-text-heading)' : 'var(--color-text-faint)' }}>{m.name}</p>
                     {current && (
-                      <span className="font-label font-bold px-2.5 py-0.5 rounded-full bg-green-500/15 text-green-500 uppercase tracking-widest text-[11px]">
-                        YOU ARE HERE
-                      </span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500/15 text-green-500 uppercase tracking-widest">YOU ARE HERE</span>
                     )}
                   </div>
-                  <p className="font-label" style={{ color: 'var(--color-text-faint)' }}>
-                    {m.pts.toLocaleString()} pts • {m.unlocks}
-                  </p>
+                  <p className="text-xs text-white/40">{m.pts.toLocaleString()} pts • {m.unlocks}</p>
                 </div>
-
-                {/* Status text */}
-                <span className={`font-label shrink-0 font-bold tracking-wide ${reached ? 'text-green-500' : ''}`} style={reached ? {} : { color: 'var(--color-text-disabled)' }}>
+                <span className={`text-xs font-bold shrink-0 ${reached ? 'text-green-500' : 'text-white/20'}`}>
                   {reached ? '✅ Done' : `${m.pts - user.points} pts away`}
                 </span>
               </div>
@@ -348,31 +286,22 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ═══ Quick Actions ═══ */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <Link
-          to="/add"
-          className="card text-center !p-8 group"
-        >
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <Link to="/add" className="card text-center !p-8 group">
           <span className="text-4xl block mb-3 group-hover:scale-110 transition-transform">➕</span>
-          <p className="font-card-title" style={{ color: 'var(--color-text-heading)' }}>Add Transaction</p>
-          <p className="font-label mt-2" style={{ color: 'var(--color-text-faint)' }}>Earn +5 XP per entry</p>
+          <p className="font-semibold text-white">Add Transaction</p>
+          <p className="text-xs mt-2 text-white/40">Earn +5 XP per entry</p>
         </Link>
-        <Link
-          to="/gamification"
-          className="card text-center !p-8 group"
-        >
+        <Link to="/gamification" className="card text-center !p-8 group">
           <span className="text-4xl block mb-3 group-hover:scale-110 transition-transform">🎮</span>
-          <p className="font-card-title" style={{ color: 'var(--color-text-heading)' }}>Gamification</p>
-          <p className="font-label mt-2" style={{ color: 'var(--color-text-faint)' }}>Badges, wheel & missions</p>
+          <p className="font-semibold text-white">Gamification</p>
+          <p className="text-xs mt-2 text-white/40">Badges, wheel & missions</p>
         </Link>
-        <Link
-          to="/reports"
-          className="card text-center !p-8 group"
-        >
+        <Link to="/reports" className="card text-center !p-8 group">
           <span className="text-4xl block mb-3 group-hover:scale-110 transition-transform">📈</span>
-          <p className="font-card-title" style={{ color: 'var(--color-text-heading)' }}>View Reports</p>
-          <p className="font-label mt-2" style={{ color: 'var(--color-text-faint)' }}>Charts & analytics</p>
+          <p className="font-semibold text-white">View Reports</p>
+          <p className="text-xs mt-2 text-white/40">Charts & analytics</p>
         </Link>
       </div>
     </div>
@@ -382,11 +311,11 @@ export default function ProfilePage() {
 /* ── Small Components ── */
 function QuickStat({ icon, label, value }) {
   return (
-    <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl" style={{ background: 'var(--profile-quick-stat-bg)' }}>
-      <span className="text-2xl">{icon}</span>
+    <div className="flex items-center gap-1 px-3 py-2 rounded-xl" style={{ background: 'var(--profile-quick-stat-bg)' }}>
+      <span className="text-lg">{icon}</span>
       <div>
-        <p className="font-label" style={{ color: 'rgba(255,255,255,0.6)' }}>{label}</p>
-        <p className="font-body font-bold text-slate-100">{value}</p>
+        <p className="text-[11px] text-white/50">{label}</p>
+        <p className="text-sm font-bold text-white">{value}</p>
       </div>
     </div>
   );
@@ -394,12 +323,12 @@ function QuickStat({ icon, label, value }) {
 
 function StatCard({ icon, label, value, color }) {
   return (
-    <div className="card animate-slide-in !p-6">
+    <div className="p-6 rounded-2xl border border-white/10 bg-white/5 animate-slide-in hover:-translate-y-1 transition-all">
       <div className="flex items-center gap-3 mb-3">
         <span className="text-2xl">{icon}</span>
-        <span className="font-label font-bold" style={{ color: 'var(--color-text-muted)' }}>{label}</span>
+        <span className="text-sm opacity-50 font-bold text-white mb-2">{label}</span>
       </div>
-      <p className="font-card-value truncate" style={{ color }}>{value}</p>
+      <p className="text-2xl font-bold truncate" style={{ color }}>{value}</p>
     </div>
   );
 }
