@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-on-primary-fixed: #002117;
+  --color-surface-container-highest: #e0e3e5;
+  --color-on-primary: #ffffff;
+  --color-on-tertiary-fixed: #111c2d;
+  --color-surface-container-low: #f2f4f6;
+  --color-on-secondary-fixed: #002113;
+  --color-secondary-fixed-dim: #4edea3;
+  --color-on-tertiary-fixed-variant: #3c475a;
+  --color-surface-container-high: #e6e8ea;
+  --color-primary-fixed: #b0f0d6;
+  --color-on-primary-container: #80bea6;
+  --color-surface-tint: #2b6954;
+  --color-secondary: #006c49;
+  --color-on-secondary-fixed-variant: #005236;
+  --color-secondary-fixed: #6ffbbe;
+  --color-primary-container: #064e3b;
+  --color-secondary-container: #6cf8bb;
+  --color-inverse-surface: #2d3133;
+  --color-tertiary-fixed: #d8e3fb;
+  --color-on-secondary-container: #00714d;
+  --color-surface-container: #eceef0;
+  --color-on-primary-fixed-variant: #0b513d;
+  --color-inverse-on-surface: #eff1f3;
+  --color-on-error-container: #93000a;
+  --color-tertiary: #242f41;
+  --color-surface-dim: #d8dadc;
+  --color-on-background: #191c1e;
+  --color-on-surface: #191c1e;
+  --color-background: #f7f9fb;
+  --color-on-tertiary: #ffffff;
+  --color-on-secondary: #ffffff;
+  --color-on-surface-variant: #404944;
+  --color-on-tertiary-container: #a7b2c9;
+  --color-on-error: #ffffff;
+  --color-outline: #707974;
+  --color-inverse-primary: #95d3ba;
+  --color-surface: #f7f9fb;
+  --color-surface-variant: #e0e3e5;
+  --color-error: #ba1a1a;
+  --color-surface-bright: #f7f9fb;
+  --color-tertiary-fixed-dim: #bcc7de;
+  --color-surface-container-lowest: #ffffff;
+  --color-primary-fixed-dim: #95d3ba;
+  --color-primary: #003527;
+  --color-error-container: #ffdad6;
+  --color-tertiary-container: #3a4558;
+  --color-outline-variant: #bfc9c3;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-headline: "Manrope", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Inter", sans-serif;
+  --font-manrope: "Manrope", sans-serif;
+  --font-inter: "Inter", sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.glass-nav {
+    backdrop-filter: blur(24px);
 }
